@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { ArrowUp } from "lucide-react";
 import { Navbar } from "./Navbar";
 import { Footer } from "./Footer";
+import { AmbientBackground } from "./AmbientBackground";
 
 export function SiteLayout({ children }: { children: ReactNode }) {
   const [showTop, setShowTop] = useState(false);
@@ -13,9 +14,10 @@ export function SiteLayout({ children }: { children: ReactNode }) {
   }, []);
 
   return (
-    <div className="min-h-dvh bg-background">
+    <div className="relative min-h-dvh">
+      <AmbientBackground />
       <Navbar />
-      <main className="pt-24">{children}</main>
+      <main className="pt-28">{children}</main>
       <Footer />
       <AnimatePresence>
         {showTop && (
@@ -23,7 +25,7 @@ export function SiteLayout({ children }: { children: ReactNode }) {
             initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 20 }}
             onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
             aria-label="Back to top"
-            className="fixed bottom-6 right-6 z-40 grid h-11 w-11 place-items-center rounded-full bg-primary text-primary-foreground shadow-ink transition-transform hover:scale-105"
+            className="glass-strong glass-reflect fixed bottom-6 right-6 z-40 grid h-12 w-12 place-items-center rounded-full text-foreground shadow-float transition-transform hover:scale-105"
           >
             <ArrowUp className="h-4 w-4" />
           </motion.button>

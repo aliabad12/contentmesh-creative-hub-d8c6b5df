@@ -24,57 +24,72 @@ export function Hero() {
 
   return (
     <section className="relative overflow-hidden">
-      <div className="mesh-bg absolute inset-0 -z-10" />
       <motion.div
         aria-hidden
-        className="absolute -left-24 top-24 -z-10 h-72 w-72 rounded-full bg-accent/20 blur-3xl"
+        className="absolute -left-24 top-24 -z-10 h-72 w-72 rounded-full bg-accent/30 blur-3xl"
         style={{ x: tX, y: tY }}
       />
       <motion.div
         aria-hidden
-        className="absolute -right-24 top-48 -z-10 h-96 w-96 rounded-full bg-primary/20 blur-3xl"
+        className="absolute -right-24 top-48 -z-10 h-96 w-96 rounded-full bg-primary/25 blur-3xl"
         style={{ x: useTransform(sx, (v) => `${-v}px`), y: useTransform(sy, (v) => `${-v}px`) }}
       />
 
-      <div className="mx-auto grid max-w-7xl grid-cols-1 items-center gap-14 px-6 pb-20 pt-8 lg:grid-cols-[1.1fr_1fr] lg:pt-16">
+      <div className="mx-auto grid max-w-7xl grid-cols-1 items-center gap-14 px-6 pb-24 pt-6 lg:grid-cols-[1.1fr_1fr] lg:pt-14">
         <div>
-          <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}
-            className="inline-flex items-center gap-2 rounded-full border border-border/70 bg-background/70 px-3 py-1.5 text-xs font-medium text-muted-foreground shadow-soft backdrop-blur">
-            <span className="grid h-4 w-4 place-items-center rounded-full gradient-brand"><Sparkles className="h-2.5 w-2.5 text-white" /></span>
+          <motion.div
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+            className="glass glass-reflect inline-flex items-center gap-2 rounded-full px-3.5 py-1.5 text-xs font-medium text-foreground/80 shadow-glass"
+          >
+            <span className="grid h-4 w-4 place-items-center rounded-full bg-gradient-to-br from-[oklch(0.72_0.19_42)] to-[oklch(0.42_0.15_260)]">
+              <Sparkles className="h-2.5 w-2.5 text-white" />
+            </span>
             Now booking Q1 productions
           </motion.div>
 
           <motion.h1
-            initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.05 }}
-            className="mt-5 font-display text-5xl font-bold leading-[1.02] tracking-tight sm:text-6xl lg:text-[76px]"
+            initial={{ opacity: 0, y: 20, filter: "blur(8px)" }}
+            animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+            transition={{ duration: 0.8, delay: 0.05, ease: [0.16, 1, 0.3, 1] }}
+            className="mt-6 font-display text-[44px] font-bold leading-[0.98] tracking-[-0.03em] sm:text-6xl lg:text-[76px]"
           >
-            AI-powered creative content{" "}
-            <span className="gradient-text">that grows your business.</span>
+            AI-powered content{" "}
+            <span className="gradient-text">that moves people.</span>
           </motion.h1>
 
           <motion.p
-            initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.15 }}
-            className="mt-6 max-w-xl text-lg text-muted-foreground"
+            initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7, delay: 0.2 }}
+            className="mt-6 max-w-xl text-lg leading-relaxed text-muted-foreground"
           >
-            We craft stunning AI videos, cinematic animations, professional voiceovers, and high-converting marketing content for brands worldwide.
+            We create cinematic AI videos, animations, voiceovers, and premium visual experiences for modern brands, creators, and agencies.
           </motion.p>
 
           <motion.div
-            initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.25 }}
-            className="mt-8 flex flex-wrap items-center gap-3"
+            initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7, delay: 0.3 }}
+            className="mt-9 flex flex-wrap items-center gap-3"
           >
-            <Link to="/contact" className="group inline-flex items-center gap-2 rounded-full bg-primary px-6 py-3.5 text-sm font-semibold text-primary-foreground shadow-ink transition-transform hover:scale-[1.03]">
-              Get Started <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
+            <Link
+              to="/contact"
+              className="group relative inline-flex items-center gap-2 overflow-hidden rounded-full bg-gradient-to-br from-[oklch(0.72_0.19_42)] to-[oklch(0.60_0.22_30)] px-6 py-3.5 text-sm font-semibold text-white ring-1 ring-white/30 shadow-[0_15px_40px_-15px_rgba(255,90,31,0.7)] transition-transform hover:scale-[1.03]"
+            >
+              <span className="pointer-events-none absolute inset-0 rounded-full bg-[radial-gradient(120%_60%_at_0%_0%,rgba(255,255,255,0.5),transparent_50%)]" />
+              <span className="relative">Start Project</span>
+              <ArrowRight className="relative h-4 w-4 transition-transform group-hover:translate-x-0.5" />
             </Link>
-            <Link to="/portfolio" className="inline-flex items-center gap-2 rounded-full border border-border bg-background/70 px-6 py-3.5 text-sm font-semibold text-foreground backdrop-blur transition-colors hover:bg-secondary">
-              <Play className="h-4 w-4" /> View Portfolio
+            <Link
+              to="/portfolio"
+              className="glass glass-reflect inline-flex items-center gap-2 rounded-full px-6 py-3.5 text-sm font-semibold text-foreground shadow-glass transition-transform hover:scale-[1.03]"
+            >
+              <Play className="h-4 w-4" /> View Work
             </Link>
           </motion.div>
 
           <div className="mt-10 flex items-center gap-6 text-xs text-muted-foreground">
             <div className="flex -space-x-2">
               {["#FF5A1F", "#0D4C92", "#F6C244", "#111"].map((c) => (
-                <span key={c} className="h-7 w-7 rounded-full border-2 border-background" style={{ background: c }} />
+                <span key={c} className="h-7 w-7 rounded-full ring-2 ring-white/80 dark:ring-black/50" style={{ background: c }} />
               ))}
             </div>
             <p><span className="font-semibold text-foreground">250+ brands</span> shipped premium content with ContentMesh.</p>
@@ -115,29 +130,30 @@ function HeroMockup() {
       className="relative"
     >
       <motion.div style={{ rotateX: srx, rotateY: sry, transformStyle: "preserve-3d" }} className="relative">
-        <div className="glass relative overflow-hidden rounded-3xl p-4 shadow-ink">
-          <div className="flex items-center gap-1.5 pb-3">
+        <div className="glass-strong glass-reflect relative overflow-hidden rounded-[2.25rem] p-4 shadow-float">
+          <div className="relative z-[2] flex items-center gap-1.5 pb-3">
             <span className="h-2.5 w-2.5 rounded-full bg-red-400/70" />
             <span className="h-2.5 w-2.5 rounded-full bg-yellow-400/70" />
             <span className="h-2.5 w-2.5 rounded-full bg-green-400/70" />
             <span className="ml-3 text-xs text-muted-foreground">mesh.studio / render</span>
           </div>
-          <div className="relative aspect-video overflow-hidden rounded-2xl gradient-brand">
-            <div className="absolute inset-0 mesh-bg opacity-70" />
+          <div className="relative z-[2] aspect-video overflow-hidden rounded-2xl">
+            <div className="absolute inset-0 bg-gradient-to-br from-[oklch(0.72_0.19_42)] via-[oklch(0.55_0.20_35)] to-[oklch(0.36_0.13_260)]" />
+            <div className="absolute inset-0 mesh-grid opacity-30" />
             <div className="absolute inset-0 grid place-items-center">
-              <motion.div animate={{ scale: [1, 1.08, 1] }} transition={{ repeat: Infinity, duration: 2.4 }} className="grid h-16 w-16 place-items-center rounded-full bg-white/95 text-primary shadow-2xl">
+              <motion.div animate={{ scale: [1, 1.08, 1] }} transition={{ repeat: Infinity, duration: 2.4 }} className="glass-strong grid h-16 w-16 place-items-center rounded-full text-primary shadow-2xl">
                 <Play className="h-6 w-6 translate-x-0.5" />
               </motion.div>
             </div>
-            <div className="absolute bottom-3 left-3 right-3 flex items-center gap-2 rounded-xl bg-black/40 px-3 py-2 text-[11px] text-white backdrop-blur">
+            <div className="glass absolute bottom-3 left-3 right-3 flex items-center gap-2 rounded-xl px-3 py-2 text-[11px] text-white">
               <span className="h-1 flex-1 overflow-hidden rounded-full bg-white/25"><motion.span initial={{ width: 0 }} animate={{ width: "62%" }} transition={{ duration: 2, delay: 0.6 }} className="block h-full rounded-full bg-white" /></span>
               <span>02:41 / 04:20</span>
             </div>
           </div>
-          <div className="mt-4 grid grid-cols-3 gap-2 text-[11px]">
+          <div className="relative z-[2] mt-4 grid grid-cols-3 gap-2 text-[11px]">
             {["Scene A", "Scene B", "Scene C"].map((s, i) => (
-              <div key={s} className="aspect-video rounded-lg border border-border/70 bg-background/60 p-1.5">
-                <div className="h-full rounded-md" style={{ background: `linear-gradient(135deg, ${["#FF5A1F","#0D4C92","#F6C244"][i]}22, transparent)` }} />
+              <div key={s} className="glass aspect-video rounded-lg p-1.5">
+                <div className="h-full rounded-md" style={{ background: `linear-gradient(135deg, ${["#FF5A1F","#0D4C92","#F6C244"][i]}55, transparent)` }} />
                 <p className="mt-1 text-muted-foreground">{s}</p>
               </div>
             ))}

@@ -12,13 +12,19 @@ const FAQ = [
 
 export function FAQ_() {
   return (
-    <section className="mx-auto max-w-3xl px-6 py-24">
+    <section className="mx-auto max-w-3xl px-6 py-24 sm:py-32">
       <SectionHeader eyebrow="FAQ" title="Answers to what you're probably wondering" />
-      <Accordion type="single" collapsible className="mt-12 w-full">
+      <Accordion type="single" collapsible className="mt-14 w-full space-y-3">
         {FAQ.map(([q, a], i) => (
-          <AccordionItem key={q} value={`i-${i}`} className="border-b border-border">
-            <AccordionTrigger className="text-left font-display text-base font-semibold hover:no-underline">{q}</AccordionTrigger>
-            <AccordionContent className="text-muted-foreground">{a}</AccordionContent>
+          <AccordionItem
+            key={q}
+            value={`i-${i}`}
+            className="glass glass-reflect overflow-hidden rounded-2xl border-0 px-5 shadow-glass"
+          >
+            <AccordionTrigger className="py-5 text-left font-display text-base font-semibold hover:no-underline">
+              {q}
+            </AccordionTrigger>
+            <AccordionContent className="pb-5 text-muted-foreground">{a}</AccordionContent>
           </AccordionItem>
         ))}
       </Accordion>
