@@ -21,25 +21,26 @@ const SERVICES = [
 
 export function Services() {
   return (
-    <section className="mx-auto max-w-7xl px-6 py-24" id="services">
+    <section className="relative mx-auto max-w-7xl px-6 py-24 sm:py-32" id="services">
       <SectionHeader eyebrow="Services" title="A full-stack creative studio, supercharged by AI" desc="Every capability you need to ship premium video content — under one roof." />
-      <div className="mt-14 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      <div className="mt-16 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
         {SERVICES.map((s, i) => (
           <motion.div
             key={s.title}
             initial={{ opacity: 0, y: 24 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-60px" }}
-            transition={{ duration: 0.5, delay: (i % 3) * 0.08 }}
-            className="group relative overflow-hidden rounded-3xl border border-border bg-card p-6 transition-all hover:-translate-y-1 hover:shadow-glow"
+            transition={{ duration: 0.6, delay: (i % 3) * 0.08, ease: [0.16, 1, 0.3, 1] }}
+            whileHover={{ y: -6, rotate: -0.4 }}
+            className="glass glass-reflect shimmer group relative overflow-hidden rounded-[2rem] p-7 transition-shadow hover:shadow-float"
           >
-            <div className="absolute -right-16 -top-16 h-40 w-40 rounded-full bg-accent/10 opacity-0 blur-2xl transition-opacity group-hover:opacity-100" />
-            <div className="relative">
-              <div className="grid h-11 w-11 place-items-center rounded-2xl gradient-brand text-white shadow-glow">
+            <div className="absolute -right-16 -top-16 h-40 w-40 rounded-full bg-[radial-gradient(circle,rgba(255,90,31,0.5),transparent_60%)] opacity-0 blur-2xl transition-opacity duration-500 group-hover:opacity-100" />
+            <div className="relative z-[2]">
+              <div className="grid h-12 w-12 place-items-center rounded-2xl bg-gradient-to-br from-[oklch(0.72_0.19_42)] to-[oklch(0.42_0.15_260)] text-white shadow-[0_10px_25px_-10px_rgba(255,90,31,0.55)] ring-1 ring-white/40 transition-transform duration-500 group-hover:scale-110 group-hover:rotate-6">
                 <s.icon className="h-5 w-5" />
               </div>
-              <h3 className="mt-5 font-display text-lg font-semibold">{s.title}</h3>
-              <p className="mt-2 text-sm text-muted-foreground">{s.desc}</p>
+              <h3 className="mt-6 font-display text-lg font-semibold tracking-tight">{s.title}</h3>
+              <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{s.desc}</p>
             </div>
           </motion.div>
         ))}
@@ -51,11 +52,12 @@ export function Services() {
 export function SectionHeader({ eyebrow, title, desc, center = true }: { eyebrow: string; title: string; desc?: string; center?: boolean }) {
   return (
     <div className={center ? "mx-auto max-w-2xl text-center" : "max-w-2xl"}>
-      <span className="inline-flex items-center gap-2 rounded-full border border-border bg-background px-3 py-1 text-xs font-semibold uppercase tracking-widest text-accent">
+      <span className="glass inline-flex items-center gap-2 rounded-full px-3.5 py-1.5 text-[11px] font-semibold uppercase tracking-[0.18em] text-accent">
+        <span className="h-1.5 w-1.5 rounded-full bg-accent" />
         {eyebrow}
       </span>
-      <h2 className="mt-4 font-display text-3xl font-bold tracking-tight sm:text-4xl lg:text-5xl">{title}</h2>
-      {desc && <p className="mt-4 text-base text-muted-foreground sm:text-lg">{desc}</p>}
+      <h2 className="mt-5 font-display text-3xl font-bold leading-[1.05] tracking-tight sm:text-4xl lg:text-[52px]">{title}</h2>
+      {desc && <p className="mt-5 text-base leading-relaxed text-muted-foreground sm:text-lg">{desc}</p>}
     </div>
   );
 }
