@@ -26,7 +26,7 @@ export function Process() {
               transition={{ duration: 0.5 }}
               className={`relative grid grid-cols-1 items-center gap-6 lg:grid-cols-2 ${i % 2 === 1 ? "lg:[&>*:first-child]:col-start-2" : ""}`}
             >
-              <div className={`rounded-3xl border border-border bg-card p-6 shadow-soft ${i % 2 === 1 ? "lg:text-right" : ""}`}>
+              <div className={`glass glass-reflect rounded-[2rem] p-7 shadow-glass ${i % 2 === 1 ? "lg:text-right" : ""}`}>
                 <p className="font-display text-4xl font-bold gradient-text">{String(i + 1).padStart(2, "0")}</p>
                 <h3 className="mt-2 font-display text-xl font-semibold">{s.t}</h3>
                 <p className="mt-2 text-sm text-muted-foreground">{s.d}</p>

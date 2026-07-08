@@ -30,7 +30,7 @@ export function Portfolio() {
           <button
             key={c}
             onClick={() => setCat(c)}
-            className={`rounded-full px-4 py-1.5 text-sm font-medium transition-all ${cat === c ? "bg-primary text-primary-foreground shadow-ink" : "border border-border bg-background hover:bg-secondary"}`}
+            className={`rounded-full px-4 py-1.5 text-sm font-medium transition-all ${cat === c ? "bg-gradient-to-br from-[oklch(0.72_0.19_42)] to-[oklch(0.60_0.22_30)] text-white shadow-[0_10px_25px_-10px_rgba(255,90,31,0.6)] ring-1 ring-white/30" : "glass hover:bg-white/60 dark:hover:bg-white/10"}`}
           >
             {c}
           </button>

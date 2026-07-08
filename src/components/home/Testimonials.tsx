@@ -15,7 +15,7 @@ export function Testimonials() {
   const cur = T[i];
   const go = (d: number) => setI((v) => (v + d + T.length) % T.length);
   return (
-    <section className="bg-secondary/40 py-24">
+    <section className="py-24 sm:py-32">
       <div className="mx-auto max-w-4xl px-6">
         <SectionHeader eyebrow="Testimonials" title="Loved by builders and brand teams" />
         <div className="relative mt-12">
@@ -26,7 +26,7 @@ export function Testimonials() {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -16 }}
               transition={{ duration: 0.35 }}
-              className="rounded-3xl border border-border bg-card p-8 shadow-soft sm:p-12"
+              className="glass-strong glass-reflect rounded-[2rem] p-8 shadow-float sm:p-12"
             >
               <div className="flex items-center gap-1 text-accent">
                 {Array.from({ length: 5 }).map((_, k) => <Star key={k} className="h-4 w-4 fill-current" />)}
@@ -51,8 +51,8 @@ export function Testimonials() {
               ))}
             </div>
             <div className="flex gap-2">
-              <button onClick={() => go(-1)} aria-label="Previous" className="grid h-10 w-10 place-items-center rounded-full border border-border bg-background hover:bg-secondary"><ChevronLeft className="h-4 w-4" /></button>
-              <button onClick={() => go(1)} aria-label="Next" className="grid h-10 w-10 place-items-center rounded-full border border-border bg-background hover:bg-secondary"><ChevronRight className="h-4 w-4" /></button>
+              <button onClick={() => go(-1)} aria-label="Previous" className="glass grid h-10 w-10 place-items-center rounded-full hover:bg-white/60 dark:hover:bg-white/10"><ChevronLeft className="h-4 w-4" /></button>
+              <button onClick={() => go(1)} aria-label="Next" className="glass grid h-10 w-10 place-items-center rounded-full hover:bg-white/60 dark:hover:bg-white/10"><ChevronRight className="h-4 w-4" /></button>
             </div>
           </div>
         </div>
