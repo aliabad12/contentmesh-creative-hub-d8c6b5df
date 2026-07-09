@@ -1,8 +1,23 @@
 import { Link } from "@tanstack/react-router";
 import { ArrowRight } from "lucide-react";
 import { motion } from "framer-motion";
+import { useSanity } from "@/integrations/sanity/useSanity";
+import { homepageQuery } from "@/integrations/sanity/queries";
+
+type Data = {
+  ctaTitle?: string;
+  ctaTitleAccent?: string;
+  ctaSubtitle?: string;
+};
+
+const FALLBACK: Data = {
+  ctaTitle: "Ready to",
+  ctaTitleAccent: "create something unforgettable?",
+  ctaSubtitle: "Book a 20-minute discovery call. We'll map a creative roadmap tailored to your goals and audience.",
+};
 
 export function CTA() {
+  const data = useSanity<Data>(["sanity", "homepage", "cta"], homepageQuery, FALLBACK);
   return (
     <section className="mx-auto max-w-7xl px-6 py-16">
       <motion.div
@@ -16,10 +31,11 @@ export function CTA() {
         <div className="relative grid gap-8 lg:grid-cols-[1.4fr_1fr] lg:items-center">
           <div>
             <h2 className="font-display text-3xl font-bold tracking-tight sm:text-5xl">
-              Ready to <span className="gradient-text">create something unforgettable?</span>
+              {data.ctaTitle ?? FALLBACK.ctaTitle}{" "}
+              <span className="gradient-text">{data.ctaTitleAccent ?? FALLBACK.ctaTitleAccent}</span>
             </h2>
             <p className="mt-4 max-w-xl text-muted-foreground">
-              Book a 20-minute discovery call. We'll map a creative roadmap tailored to your goals and audience.
+              {data.ctaSubtitle ?? FALLBACK.ctaSubtitle}
             </p>
           </div>
           <div className="flex flex-wrap gap-3 lg:justify-end">
