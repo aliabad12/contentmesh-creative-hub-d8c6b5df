@@ -1,20 +1,40 @@
 import { Link } from "@tanstack/react-router";
 import { Instagram, Linkedin, Twitter, Youtube, Send } from "lucide-react";
 import { Logo } from "@/components/brand/Logo";
+import { useSanity } from "@/integrations/sanity/useSanity";
+import { siteSettingsQuery } from "@/integrations/sanity/queries";
+
+type Settings = {
+  tagline?: string;
+  socials?: { instagram?: string; linkedin?: string; twitter?: string; youtube?: string };
+};
+
+const FALLBACK: Settings = {
+  tagline: "An AI-powered creative studio helping brands ship cinematic content — faster, sharper, on-message.",
+  socials: { instagram: "#", linkedin: "#", twitter: "#", youtube: "#" },
+};
 
 export function Footer() {
+  const settings = useSanity<Settings>(["sanity", "siteSettings", "footer"], siteSettingsQuery, FALLBACK);
+  const s = { ...FALLBACK, ...settings, socials: { ...FALLBACK.socials, ...settings.socials } };
+
+  const socials: [React.ComponentType<{ className?: string }>, string, string][] = [
+    [Instagram, "Instagram", s.socials?.instagram ?? "#"],
+    [Linkedin, "LinkedIn", s.socials?.linkedin ?? "#"],
+    [Twitter, "Twitter", s.socials?.twitter ?? "#"],
+    [Youtube, "YouTube", s.socials?.youtube ?? "#"],
+  ];
+
   return (
     <footer className="relative mt-24 border-t border-border/60 bg-secondary/40">
       <div className="mx-auto max-w-7xl px-6 py-16">
         <div className="grid gap-12 lg:grid-cols-[1.4fr_1fr_1fr_1.2fr]">
           <div>
             <Logo />
-            <p className="mt-4 max-w-xs text-sm text-muted-foreground">
-              An AI-powered creative studio helping brands ship cinematic content — faster, sharper, on-message.
-            </p>
+            <p className="mt-4 max-w-xs text-sm text-muted-foreground">{s.tagline}</p>
             <div className="mt-6 flex gap-2">
-              {[Instagram, Linkedin, Twitter, Youtube].map((Icon, i) => (
-                <a key={i} href="#" aria-label="social" className="grid h-9 w-9 place-items-center rounded-full border border-border bg-background text-muted-foreground transition-colors hover:bg-primary hover:text-primary-foreground">
+              {socials.map(([Icon, label, href]) => (
+                <a key={label} href={href} aria-label={label} className="grid h-9 w-9 place-items-center rounded-full border border-border bg-background text-muted-foreground transition-colors hover:bg-primary hover:text-primary-foreground">
                   <Icon className="h-4 w-4" />
                 </a>
               ))}
