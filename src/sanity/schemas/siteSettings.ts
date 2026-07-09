@@ -1,0 +1,35 @@
+import { defineType, defineField } from "sanity";
+
+export default defineType({
+  name: "siteSettings",
+  title: "Site Settings",
+  type: "document",
+  fields: [
+    defineField({ name: "title", type: "string", initialValue: "ContentMesh" }),
+    defineField({ name: "tagline", type: "string" }),
+    defineField({ name: "logo", type: "image", options: { hotspot: true } }),
+    defineField({
+      name: "socials",
+      type: "object",
+      fields: [
+        defineField({ name: "instagram", type: "url" }),
+        defineField({ name: "linkedin", type: "url" }),
+        defineField({ name: "twitter", type: "url" }),
+        defineField({ name: "youtube", type: "url" }),
+      ],
+    }),
+    defineField({ name: "email", type: "string" }),
+    defineField({ name: "phone", type: "string" }),
+    defineField({ name: "address", type: "text", rows: 2 }),
+    defineField({
+      name: "defaultSeo",
+      type: "object",
+      fields: [
+        defineField({ name: "metaTitle", type: "string" }),
+        defineField({ name: "metaDescription", type: "text", rows: 2 }),
+        defineField({ name: "ogImage", type: "image" }),
+      ],
+    }),
+  ],
+  preview: { select: { title: "title" } },
+});
