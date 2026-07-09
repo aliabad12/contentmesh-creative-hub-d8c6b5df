@@ -1,24 +1,33 @@
 import { useEffect, useRef, useState } from "react";
-import { motion, useInView } from "framer-motion";
+import { useInView } from "framer-motion";
+import { useSanity } from "@/integrations/sanity/useSanity";
+import { homepageQuery } from "@/integrations/sanity/queries";
 
-const STATS = [
-  { v: 250, s: "+", l: "Projects Delivered" },
-  { v: 98,  s: "%", l: "Client Satisfaction" },
-  { v: 40,  s: "+", l: "Brands Served" },
-  { v: 12,  s: "+", l: "Creative Services" },
-];
+type Stat = { value: number; suffix?: string; label: string };
+type HomepageStats = { stats?: Stat[] };
+
+const FALLBACK: HomepageStats = {
+  stats: [
+    { value: 250, suffix: "+", label: "Projects Delivered" },
+    { value: 98, suffix: "%", label: "Client Satisfaction" },
+    { value: 40, suffix: "+", label: "Brands Served" },
+    { value: 12, suffix: "+", label: "Creative Services" },
+  ],
+};
 
 export function Stats() {
+  const data = useSanity<HomepageStats>(["sanity", "homepage", "stats"], homepageQuery, FALLBACK);
+  const stats = data.stats && data.stats.length ? data.stats : FALLBACK.stats!;
   return (
     <section className="mx-auto max-w-7xl px-6 py-16">
       <div className="rounded-[2rem] gradient-brand p-8 shadow-ink sm:p-12">
         <div className="grid grid-cols-2 gap-8 text-white sm:grid-cols-4">
-          {STATS.map((s) => (
-            <div key={s.l} className="text-center">
+          {stats.map((s) => (
+            <div key={s.label} className="text-center">
               <p className="font-display text-4xl font-bold tracking-tight sm:text-5xl">
-                <Counter to={s.v} />{s.s}
+                <Counter to={s.value} />{s.suffix ?? ""}
               </p>
-              <p className="mt-2 text-sm text-white/85">{s.l}</p>
+              <p className="mt-2 text-sm text-white/85">{s.label}</p>
             </div>
           ))}
         </div>

@@ -4,7 +4,9 @@ import { motion } from "framer-motion";
 import { z } from "zod";
 import { SiteLayout } from "@/components/layout/SiteLayout";
 import { PageHero } from "@/components/layout/PageHero";
-import { Mail, Phone, MapPin, Check } from "lucide-react";
+import { Mail, Phone, MapPin, Clock, Check } from "lucide-react";
+import { useSanity } from "@/integrations/sanity/useSanity";
+import { contactQuery } from "@/integrations/sanity/queries";
 
 export const Route = createFileRoute("/contact")({
   head: () => ({
@@ -29,7 +31,24 @@ const schema = z.object({
   details: z.string().trim().min(10, "Tell us a bit more").max(2000),
 });
 
+type ContactInfo = {
+  email?: string;
+  phone?: string;
+  address?: string;
+  hours?: string;
+  mapEmbedUrl?: string;
+};
+
+const CONTACT_FALLBACK: ContactInfo = {
+  email: "hello@contentmesh.studio",
+  phone: "+1 (415) 555-0123",
+  address: "88 Market Street, Suite 400, San Francisco, CA",
+  hours: "Mon–Fri, 9am–6pm PT",
+};
+
 function Contact() {
+  const info = useSanity<ContactInfo>(["sanity", "contact"], contactQuery, CONTACT_FALLBACK);
+  const c = { ...CONTACT_FALLBACK, ...info };
   const [status, setStatus] = useState<"idle" | "sending" | "ok" | "error">("idle");
   const [errors, setErrors] = useState<Record<string, string>>({});
 
@@ -95,16 +114,21 @@ function Contact() {
           </motion.form>
 
           <div className="space-y-4">
-            <InfoCard icon={<Mail className="h-4 w-4" />} title="Email" value="hello@contentmesh.studio" />
-            <InfoCard icon={<Phone className="h-4 w-4" />} title="Phone" value="+1 (415) 555-0123" />
-            <InfoCard icon={<MapPin className="h-4 w-4" />} title="Studio" value="88 Market Street, Suite 400, San Francisco, CA" />
+            {c.email && <InfoCard icon={<Mail className="h-4 w-4" />} title="Email" value={c.email} />}
+            {c.phone && <InfoCard icon={<Phone className="h-4 w-4" />} title="Phone" value={c.phone} />}
+            {c.address && <InfoCard icon={<MapPin className="h-4 w-4" />} title="Studio" value={c.address} />}
+            {c.hours && <InfoCard icon={<Clock className="h-4 w-4" />} title="Hours" value={c.hours} />}
             <div className="overflow-hidden rounded-3xl border border-border">
-              <div className="relative aspect-[4/3]" style={{ background: "linear-gradient(135deg,#0D4C92,#FF5A1F)" }}>
-                <div className="absolute inset-0 mesh-bg opacity-50 mix-blend-overlay" />
-                <div className="absolute inset-0 grid place-items-center">
-                  <div className="glass rounded-full px-4 py-2 text-xs font-semibold text-foreground">Map preview</div>
+              {c.mapEmbedUrl ? (
+                <iframe title="Studio location" src={c.mapEmbedUrl} className="aspect-[4/3] w-full" loading="lazy" />
+              ) : (
+                <div className="relative aspect-[4/3]" style={{ background: "linear-gradient(135deg,#0D4C92,#FF5A1F)" }}>
+                  <div className="absolute inset-0 mesh-bg opacity-50 mix-blend-overlay" />
+                  <div className="absolute inset-0 grid place-items-center">
+                    <div className="glass rounded-full px-4 py-2 text-xs font-semibold text-foreground">Map preview</div>
+                  </div>
                 </div>
-              </div>
+              )}
             </div>
           </div>
         </div>

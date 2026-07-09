@@ -2,8 +2,35 @@ import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
 import { useEffect, useRef } from "react";
 import { Link } from "@tanstack/react-router";
 import { ArrowRight, Play, Sparkles, Video, Mic, Wand2, Film } from "lucide-react";
+import { useSanity } from "@/integrations/sanity/useSanity";
+import { homepageQuery } from "@/integrations/sanity/queries";
+
+type HeroData = {
+  heroEyebrow?: string;
+  heroTitle?: string;
+  heroTitleAccent?: string;
+  heroSubtitle?: string;
+  heroPrimaryCtaLabel?: string;
+  heroPrimaryCtaHref?: string;
+  heroSecondaryCtaLabel?: string;
+  heroSecondaryCtaHref?: string;
+};
+
+const FALLBACK: HeroData = {
+  heroEyebrow: "Now booking Q1 productions",
+  heroTitle: "AI-powered content",
+  heroTitleAccent: "that moves people.",
+  heroSubtitle: "We create cinematic AI videos, animations, voiceovers, and premium visual experiences for modern brands, creators, and agencies.",
+  heroPrimaryCtaLabel: "Start Project",
+  heroPrimaryCtaHref: "/contact",
+  heroSecondaryCtaLabel: "View Work",
+  heroSecondaryCtaHref: "/portfolio",
+};
 
 export function Hero() {
+  const data = useSanity<HeroData>(["sanity", "homepage", "hero"], homepageQuery, FALLBACK);
+  const d = { ...FALLBACK, ...data };
+
   const mx = useMotionValue(0);
   const my = useMotionValue(0);
   const sx = useSpring(mx, { stiffness: 60, damping: 20 });
@@ -21,32 +48,25 @@ export function Hero() {
 
   const tX = useTransform(sx, (v) => `${v}px`);
   const tY = useTransform(sy, (v) => `${v}px`);
+  const inverseX = useTransform(sx, (v) => `${-v}px`);
+  const inverseY = useTransform(sy, (v) => `${-v}px`);
 
   return (
     <section className="relative overflow-hidden">
-      <motion.div
-        aria-hidden
-        className="absolute -left-24 top-24 -z-10 h-72 w-72 rounded-full bg-accent/30 blur-3xl"
-        style={{ x: tX, y: tY }}
-      />
-      <motion.div
-        aria-hidden
-        className="absolute -right-24 top-48 -z-10 h-96 w-96 rounded-full bg-primary/25 blur-3xl"
-        style={{ x: useTransform(sx, (v) => `${-v}px`), y: useTransform(sy, (v) => `${-v}px`) }}
-      />
+      <motion.div aria-hidden className="absolute -left-24 top-24 -z-10 h-72 w-72 rounded-full bg-accent/30 blur-3xl" style={{ x: tX, y: tY }} />
+      <motion.div aria-hidden className="absolute -right-24 top-48 -z-10 h-96 w-96 rounded-full bg-primary/25 blur-3xl" style={{ x: inverseX, y: inverseY }} />
 
       <div className="mx-auto grid max-w-7xl grid-cols-1 items-center gap-14 px-6 pb-24 pt-6 lg:grid-cols-[1.1fr_1fr] lg:pt-14">
         <div>
           <motion.div
-            initial={{ opacity: 0, y: 12 }}
-            animate={{ opacity: 1, y: 0 }}
+            initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
             className="glass glass-reflect inline-flex items-center gap-2 rounded-full px-3.5 py-1.5 text-xs font-medium text-foreground/80 shadow-glass"
           >
             <span className="grid h-4 w-4 place-items-center rounded-full bg-gradient-to-br from-[oklch(0.72_0.19_42)] to-[oklch(0.42_0.15_260)]">
               <Sparkles className="h-2.5 w-2.5 text-white" />
             </span>
-            Now booking Q1 productions
+            {d.heroEyebrow}
           </motion.div>
 
           <motion.h1
@@ -55,35 +75,35 @@ export function Hero() {
             transition={{ duration: 0.8, delay: 0.05, ease: [0.16, 1, 0.3, 1] }}
             className="mt-6 font-display text-[44px] font-bold leading-[0.98] tracking-[-0.03em] sm:text-6xl lg:text-[76px]"
           >
-            AI-powered content{" "}
-            <span className="gradient-text">that moves people.</span>
+            {d.heroTitle}{" "}
+            <span className="gradient-text">{d.heroTitleAccent}</span>
           </motion.h1>
 
           <motion.p
             initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7, delay: 0.2 }}
             className="mt-6 max-w-xl text-lg leading-relaxed text-muted-foreground"
           >
-            We create cinematic AI videos, animations, voiceovers, and premium visual experiences for modern brands, creators, and agencies.
+            {d.heroSubtitle}
           </motion.p>
 
           <motion.div
             initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7, delay: 0.3 }}
             className="mt-9 flex flex-wrap items-center gap-3"
           >
-            <Link
-              to="/contact"
+            <a
+              href={d.heroPrimaryCtaHref ?? "/contact"}
               className="group relative inline-flex items-center gap-2 overflow-hidden rounded-full bg-gradient-to-br from-[oklch(0.72_0.19_42)] to-[oklch(0.60_0.22_30)] px-6 py-3.5 text-sm font-semibold text-white ring-1 ring-white/30 shadow-[0_15px_40px_-15px_rgba(255,90,31,0.7)] transition-transform hover:scale-[1.03]"
             >
               <span className="pointer-events-none absolute inset-0 rounded-full bg-[radial-gradient(120%_60%_at_0%_0%,rgba(255,255,255,0.5),transparent_50%)]" />
-              <span className="relative">Start Project</span>
+              <span className="relative">{d.heroPrimaryCtaLabel}</span>
               <ArrowRight className="relative h-4 w-4 transition-transform group-hover:translate-x-0.5" />
-            </Link>
-            <Link
-              to="/portfolio"
+            </a>
+            <a
+              href={d.heroSecondaryCtaHref ?? "/portfolio"}
               className="glass glass-reflect inline-flex items-center gap-2 rounded-full px-6 py-3.5 text-sm font-semibold text-foreground shadow-glass transition-transform hover:scale-[1.03]"
             >
-              <Play className="h-4 w-4" /> View Work
-            </Link>
+              <Play className="h-4 w-4" /> {d.heroSecondaryCtaLabel}
+            </a>
           </motion.div>
 
           <div className="mt-10 flex items-center gap-6 text-xs text-muted-foreground">
@@ -120,14 +140,10 @@ function HeroMockup() {
 
   return (
     <motion.div
-      ref={ref}
-      onMouseMove={onMove}
-      onMouseLeave={onLeave}
-      initial={{ opacity: 0, y: 30 }}
-      animate={{ opacity: 1, y: 0 }}
+      ref={ref} onMouseMove={onMove} onMouseLeave={onLeave}
+      initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.8, delay: 0.2 }}
-      style={{ perspective: 1200 }}
-      className="relative"
+      style={{ perspective: 1200 }} className="relative"
     >
       <motion.div style={{ rotateX: srx, rotateY: sry, transformStyle: "preserve-3d" }} className="relative">
         <div className="glass-strong glass-reflect relative overflow-hidden rounded-[2.25rem] p-4 shadow-float">

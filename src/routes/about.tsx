@@ -5,6 +5,8 @@ import { PageHero } from "@/components/layout/PageHero";
 import { Stats } from "@/components/home/Stats";
 import { CTA } from "@/components/home/CTA";
 import { Target, Eye, Heart, Building2 } from "lucide-react";
+import { useSanity } from "@/integrations/sanity/useSanity";
+import { teamQuery } from "@/integrations/sanity/queries";
 
 export const Route = createFileRoute("/about")({
   head: () => ({
@@ -27,14 +29,20 @@ const PILLARS = [
   { icon: Building2, t: "Studio", d: "In-house production stage, edit bays, and a dedicated VO booth." },
 ];
 
-const TEAM = [
-  { n: "Ava Morgan", r: "Creative Director", c: "#FF5A1F" },
-  { n: "Leo Park", r: "Head of AI Production", c: "#0D4C92" },
-  { n: "Sara Bello", r: "Executive Producer", c: "#F6C244" },
-  { n: "Ethan Cole", r: "Lead Motion Designer", c: "#111" },
+type TeamMember = { _id: string; name: string; role?: string; bio?: string; photoUrl?: string | null };
+
+const TEAM_FALLBACK: TeamMember[] = [
+  { _id: "t1", name: "Ava Morgan", role: "Creative Director" },
+  { _id: "t2", name: "Leo Park", role: "Head of AI Production" },
+  { _id: "t3", name: "Sara Bello", role: "Executive Producer" },
+  { _id: "t4", name: "Ethan Cole", role: "Lead Motion Designer" },
 ];
 
+const ACCENTS = ["#FF5A1F", "#0D4C92", "#F6C244", "#111"];
+
 function About() {
+  const team = useSanity<TeamMember[]>(["sanity", "team"], teamQuery, TEAM_FALLBACK);
+
   return (
     <SiteLayout>
       <PageHero eyebrow="About" title="A modern studio for the AI era" desc="We're a small, senior team of directors, editors, and technologists building the future of branded content." />
@@ -66,18 +74,28 @@ function About() {
         <h2 className="font-display text-3xl font-bold tracking-tight sm:text-4xl">The team</h2>
         <p className="mt-2 text-muted-foreground">Senior creatives, deeply hands-on.</p>
         <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-          {TEAM.map((m, i) => (
-            <motion.div key={m.n} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.06 }}
+          {team.map((m, i) => (
+            <motion.div key={m._id} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.06 }}
               className="group overflow-hidden rounded-3xl border border-border bg-card">
-              <div className="aspect-[4/5] relative" style={{ background: `linear-gradient(135deg, ${m.c}, #0D4C92)` }}>
-                <div className="absolute inset-0 mesh-bg opacity-40 mix-blend-overlay" />
-                <p className="absolute bottom-4 left-4 font-display text-4xl font-bold text-white/90">
-                  {m.n.split(" ").map((x) => x[0]).join("")}
-                </p>
+              <div
+                className="aspect-[4/5] relative"
+                style={m.photoUrl
+                  ? { background: `url(${m.photoUrl}) center/cover` }
+                  : { background: `linear-gradient(135deg, ${ACCENTS[i % ACCENTS.length]}, #0D4C92)` }}
+              >
+                {!m.photoUrl && (
+                  <>
+                    <div className="absolute inset-0 mesh-bg opacity-40 mix-blend-overlay" />
+                    <p className="absolute bottom-4 left-4 font-display text-4xl font-bold text-white/90">
+                      {m.name.split(" ").map((x) => x[0]).join("")}
+                    </p>
+                  </>
+                )}
               </div>
               <div className="p-4">
-                <p className="font-display font-semibold">{m.n}</p>
-                <p className="text-sm text-muted-foreground">{m.r}</p>
+                <p className="font-display font-semibold">{m.name}</p>
+                <p className="text-sm text-muted-foreground">{m.role}</p>
+                {m.bio && <p className="mt-2 text-xs text-muted-foreground line-clamp-3">{m.bio}</p>}
               </div>
             </motion.div>
           ))}

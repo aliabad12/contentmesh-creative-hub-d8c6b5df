@@ -1,32 +1,53 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ExternalLink, X } from "lucide-react";
+import { useSanity } from "@/integrations/sanity/useSanity";
+import { portfolioQuery } from "@/integrations/sanity/queries";
 import { SectionHeader } from "./Services";
 
-const CATS = ["All", "AI Ads", "Product Videos", "Animations", "Corporate", "Explainers", "Reels"] as const;
+type Item = {
+  _id: string;
+  title: string;
+  category?: string;
+  description?: string;
+  thumbnailUrl?: string | null;
+  videoUrl?: string;
+  client?: string;
+};
 
-type Project = { title: string; cat: (typeof CATS)[number]; gradient: string; span: string };
-const PROJECTS: Project[] = [
-  { title: "Aurea × Launch Film", cat: "AI Ads", gradient: "linear-gradient(135deg,#FF5A1F,#0D4C92)", span: "sm:col-span-2 sm:row-span-2" },
-  { title: "Halo Wireless — Hero", cat: "Product Videos", gradient: "linear-gradient(135deg,#0D4C92,#0a2450)", span: "" },
-  { title: "Nova Robotics Loop", cat: "Animations", gradient: "linear-gradient(135deg,#F6C244,#FF5A1F)", span: "" },
-  { title: "Fjord — Field Story", cat: "Corporate", gradient: "linear-gradient(135deg,#0D4C92,#5a7fbf)", span: "sm:col-span-2" },
-  { title: "Kairos AI Explainer", cat: "Explainers", gradient: "linear-gradient(135deg,#111,#FF5A1F)", span: "" },
-  { title: "Vantage Reels Set", cat: "Reels", gradient: "linear-gradient(135deg,#FF5A1F,#F6C244)", span: "" },
-  { title: "Lumen Series — S02", cat: "AI Ads", gradient: "linear-gradient(135deg,#0D4C92,#FF5A1F)", span: "sm:col-span-2" },
-  { title: "Orbita — Onboarding", cat: "Explainers", gradient: "linear-gradient(135deg,#F6F2E7,#FF5A1F)", span: "" },
+const FALLBACK_ITEMS: Item[] = [
+  { _id: "f1", title: "Aurea × Launch Film", category: "AI Ads" },
+  { _id: "f2", title: "Halo Wireless — Hero", category: "Product Videos" },
+  { _id: "f3", title: "Nova Robotics Loop", category: "Animations" },
+  { _id: "f4", title: "Fjord — Field Story", category: "Corporate" },
+  { _id: "f5", title: "Kairos AI Explainer", category: "Explainers" },
+  { _id: "f6", title: "Vantage Reels Set", category: "Reels" },
+  { _id: "f7", title: "Lumen Series — S02", category: "AI Ads" },
+  { _id: "f8", title: "Orbita — Onboarding", category: "Explainers" },
 ];
 
+const GRADIENTS = [
+  "linear-gradient(135deg,#FF5A1F,#0D4C92)",
+  "linear-gradient(135deg,#0D4C92,#0a2450)",
+  "linear-gradient(135deg,#F6C244,#FF5A1F)",
+  "linear-gradient(135deg,#0D4C92,#5a7fbf)",
+  "linear-gradient(135deg,#111,#FF5A1F)",
+  "linear-gradient(135deg,#FF5A1F,#F6C244)",
+];
+const SPANS = ["sm:col-span-2 sm:row-span-2", "", "", "sm:col-span-2", "", "", "sm:col-span-2", ""];
+
 export function Portfolio() {
-  const [cat, setCat] = useState<(typeof CATS)[number]>("All");
-  const [open, setOpen] = useState<Project | null>(null);
-  const list = cat === "All" ? PROJECTS : PROJECTS.filter((p) => p.cat === cat);
+  const items = useSanity<Item[]>(["sanity", "portfolio"], portfolioQuery, FALLBACK_ITEMS);
+  const cats = ["All", ...Array.from(new Set(items.map((i) => i.category).filter(Boolean) as string[]))];
+  const [cat, setCat] = useState<string>("All");
+  const [open, setOpen] = useState<Item | null>(null);
+  const list = cat === "All" ? items : items.filter((p) => p.category === cat);
 
   return (
     <section className="mx-auto max-w-7xl px-6 py-24" id="portfolio">
       <SectionHeader eyebrow="Portfolio" title="Work that moves — literally" desc="A curated snapshot of recent productions across formats and industries." />
       <div className="mt-8 flex flex-wrap justify-center gap-2">
-        {CATS.map((c) => (
+        {cats.map((c) => (
           <button
             key={c}
             onClick={() => setCat(c)}
@@ -39,29 +60,33 @@ export function Portfolio() {
 
       <motion.div layout className="mt-10 grid auto-rows-[220px] grid-cols-1 gap-4 sm:grid-cols-3 lg:grid-cols-4">
         <AnimatePresence>
-          {list.map((p) => (
-            <motion.button
-              layout
-              key={p.title}
-              onClick={() => setOpen(p)}
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.95 }}
-              transition={{ duration: 0.35 }}
-              className={`group relative overflow-hidden rounded-3xl text-left ${p.span}`}
-              style={{ background: p.gradient }}
-            >
-              <div className="absolute inset-0 mesh-bg opacity-40 mix-blend-overlay" />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-80" />
-              <div className="absolute inset-x-0 bottom-0 p-5 text-white">
-                <p className="text-[11px] font-semibold uppercase tracking-widest opacity-80">{p.cat}</p>
-                <h3 className="mt-1 font-display text-lg font-semibold">{p.title}</h3>
-              </div>
-              <div className="absolute right-4 top-4 grid h-9 w-9 translate-y-2 place-items-center rounded-full bg-white/90 text-primary opacity-0 transition-all group-hover:translate-y-0 group-hover:opacity-100">
-                <ExternalLink className="h-4 w-4" />
-              </div>
-            </motion.button>
-          ))}
+          {list.map((p, i) => {
+            const gradient = GRADIENTS[i % GRADIENTS.length];
+            const span = SPANS[i % SPANS.length];
+            return (
+              <motion.button
+                layout
+                key={p._id}
+                onClick={() => setOpen(p)}
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.95 }}
+                transition={{ duration: 0.35 }}
+                className={`group relative overflow-hidden rounded-3xl text-left ${span}`}
+                style={{ background: p.thumbnailUrl ? `url(${p.thumbnailUrl}) center/cover` : gradient }}
+              >
+                {!p.thumbnailUrl && <div className="absolute inset-0 mesh-bg opacity-40 mix-blend-overlay" />}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-80" />
+                <div className="absolute inset-x-0 bottom-0 p-5 text-white">
+                  <p className="text-[11px] font-semibold uppercase tracking-widest opacity-80">{p.category}</p>
+                  <h3 className="mt-1 font-display text-lg font-semibold">{p.title}</h3>
+                </div>
+                <div className="absolute right-4 top-4 grid h-9 w-9 translate-y-2 place-items-center rounded-full bg-white/90 text-primary opacity-0 transition-all group-hover:translate-y-0 group-hover:opacity-100">
+                  <ExternalLink className="h-4 w-4" />
+                </div>
+              </motion.button>
+            );
+          })}
         </AnimatePresence>
       </motion.div>
 
@@ -80,13 +105,21 @@ export function Portfolio() {
               <button onClick={() => setOpen(null)} className="absolute right-4 top-4 z-10 grid h-9 w-9 place-items-center rounded-full bg-white/90 text-primary" aria-label="Close">
                 <X className="h-4 w-4" />
               </button>
-              <div className="aspect-video w-full" style={{ background: open.gradient }}>
-                <div className="h-full w-full mesh-bg mix-blend-overlay" />
+              <div className="aspect-video w-full" style={{ background: open.thumbnailUrl ? `url(${open.thumbnailUrl}) center/cover` : "linear-gradient(135deg,#0D4C92,#FF5A1F)" }}>
+                {!open.thumbnailUrl && <div className="h-full w-full mesh-bg mix-blend-overlay" />}
               </div>
               <div className="p-6">
-                <p className="text-xs font-semibold uppercase tracking-widest text-accent">{open.cat}</p>
+                <p className="text-xs font-semibold uppercase tracking-widest text-accent">{open.category}</p>
                 <h3 className="mt-2 font-display text-2xl font-bold">{open.title}</h3>
-                <p className="mt-2 text-sm text-muted-foreground">A cinematic production blending AI generation, live-action plates and premium sound design. Delivered in 4K with masters for every platform.</p>
+                {open.client && <p className="mt-1 text-sm text-muted-foreground">Client: {open.client}</p>}
+                <p className="mt-3 text-sm text-muted-foreground">
+                  {open.description ?? "A cinematic production blending AI generation, live-action plates and premium sound design."}
+                </p>
+                {open.videoUrl && (
+                  <a href={open.videoUrl} target="_blank" rel="noreferrer" className="mt-4 inline-flex items-center gap-1.5 text-sm font-semibold text-accent">
+                    Watch video <ExternalLink className="h-3.5 w-3.5" />
+                  </a>
+                )}
               </div>
             </motion.div>
           </motion.div>
