@@ -25,7 +25,7 @@ export function useSanity<T>(
     staleTime: 60_000,
     gcTime: 5 * 60_000,
     retry: false,
-    placeholderData: fallback,
+    placeholderData: fallback as never,
   });
 
   const isEmpty =
