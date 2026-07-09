@@ -1,5 +1,4 @@
 import { Link } from "@tanstack/react-router";
-import logo from "@/assets/contentmesh-logo.png.asset.json";
 
 export function Logo({ className = "" }: { className?: string }) {
   return (
@@ -9,7 +8,7 @@ export function Logo({ className = "" }: { className?: string }) {
       aria-label="ContentMesh home"
     >
       <img
-        src={logo.url}
+        src="/contentmesh-logo.png"
         alt="ContentMesh"
         className="h-10 w-auto sm:h-11"
         loading="eager"
