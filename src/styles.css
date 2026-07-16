@@ -241,6 +241,10 @@ spline-viewer {
   background: transparent;
 }
 
+.hero-title {
+  transform: translateY(-70px);
+}
+
 @layer base {
   * { border-color: var(--color-border); }
   html { scroll-behavior: smooth; }
