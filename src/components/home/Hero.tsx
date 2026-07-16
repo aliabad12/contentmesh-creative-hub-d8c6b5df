@@ -6,7 +6,11 @@ declare module "react" {
   namespace JSX {
     interface IntrinsicElements {
       "spline-viewer": React.DetailedHTMLProps<
-        React.HTMLAttributes<HTMLElement> & { url?: string; "loading-anim-type"?: string },
+        React.HTMLAttributes<HTMLElement> & {
+          url?: string;
+          "loading-anim-type"?: string;
+          "events-target"?: string;
+        },
         HTMLElement
       >;
     }
@@ -43,39 +47,46 @@ export function Hero() {
   const splineLoaded = useSplineLoaded();
 
   return (
-    <section className="relative overflow-hidden">
-      {/* Soft radial glow + vignette */}
+    <section className="relative overflow-hidden" style={{ minHeight: "100vh" }}>
+      {/* Background glow — z:0 */}
       <div
         aria-hidden
-        className="pointer-events-none absolute inset-0 -z-20"
+        className="pointer-events-none absolute inset-0"
         style={{
+          zIndex: 0,
           background:
             "radial-gradient(50% 45% at 50% 55%, rgba(255,170,120,0.28) 0%, rgba(255,120,60,0.10) 35%, rgba(255,255,255,0) 70%)",
         }}
       />
       <div
         aria-hidden
-        className="pointer-events-none absolute inset-0 -z-20"
+        className="pointer-events-none absolute inset-0"
         style={{
+          zIndex: 0,
           background:
             "radial-gradient(120% 80% at 50% 0%, transparent 55%, rgba(0,0,0,0.05) 100%)",
         }}
       />
 
-      <div className="relative mx-auto flex min-h-[80vh] max-w-[1400px] flex-col items-center justify-center px-4 pb-16 pt-8 sm:pb-24 sm:pt-16">
-        {/* Huge background wordmark */}
+      <div className="relative mx-auto flex min-h-screen max-w-[1400px] flex-col items-center justify-center px-4 py-16">
+        {/* CONTENTMESH background wordmark — z:1 */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1.1, ease }}
           aria-hidden
-          className="pointer-events-none absolute inset-x-0 top-1/2 z-0 flex -translate-y-1/2 select-none justify-center"
+          className="pointer-events-none absolute inset-x-0 top-1/2 flex -translate-y-1/2 select-none justify-center overflow-hidden"
+          style={{ zIndex: 1 }}
         >
           <h2
-            className="whitespace-nowrap font-display font-extrabold uppercase leading-none"
+            className="hero-title font-display"
             style={{
+              fontSize: "clamp(5rem, 12vw, 10rem)",
+              fontWeight: 900,
+              lineHeight: 0.9,
               letterSpacing: "-0.06em",
-              fontSize: "clamp(72px, 19vw, 260px)",
+              whiteSpace: "nowrap",
+              textTransform: "uppercase",
             }}
           >
             <span style={{ color: "#111111" }}>CONTENT</span>
@@ -83,15 +94,23 @@ export function Hero() {
           </h2>
         </motion.div>
 
-        {/* Spline scene */}
+        {/* Spline blob — z:2 */}
         <motion.div
           initial={{ opacity: 0, scale: 0.92 }}
           animate={{ opacity: splineLoaded ? 1 : 0, scale: splineLoaded ? 1 : 0.92 }}
           transition={{ duration: 1.2, ease, delay: 0.15 }}
-          className="relative z-10 flex w-full items-center justify-center"
-          style={{ height: "clamp(360px, 55vw, 640px)" }}
+          className="hero-spline relative flex w-full items-center justify-center"
+          style={{
+            zIndex: 2,
+            height: "clamp(340px, 55vw, 620px)",
+            pointerEvents: "none",
+            userSelect: "none",
+          }}
         >
-          <div className="relative h-full w-full max-w-[750px]">
+          <div
+            className="relative h-full w-full"
+            style={{ maxWidth: "min(700px, 92vw)" }}
+          >
             {splineLoaded ? (
               <spline-viewer
                 url={SPLINE_SCENE_URL}
@@ -99,6 +118,9 @@ export function Hero() {
                   width: "100%",
                   height: "100%",
                   background: "transparent",
+                  border: "none",
+                  boxShadow: "none",
+                  pointerEvents: "none",
                 }}
               />
             ) : null}
@@ -110,7 +132,8 @@ export function Hero() {
           initial={{ opacity: 0, y: 24 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.5, ease }}
-          className="relative z-10 mt-6 flex flex-wrap items-center justify-center gap-3 sm:mt-10"
+          className="relative mt-8 flex flex-wrap items-center justify-center gap-3 sm:mt-12"
+          style={{ zIndex: 3 }}
         >
           <a href="/contact" className="btn-primary-pill group">
             <span>Get Started</span>
