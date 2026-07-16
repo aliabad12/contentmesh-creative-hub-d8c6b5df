@@ -34,13 +34,13 @@ export function Navbar() {
     >
       <div className={`mx-auto px-4 transition-all duration-500 sm:px-6 ${scrolled ? "max-w-5xl" : "max-w-6xl"}`}>
         <div
-          className="flex items-center justify-between rounded-full px-3 py-2 sm:px-4"
+          className="flex items-center justify-between px-3 py-2 sm:px-4"
           style={{
             background: "rgba(255,255,255,0.55)",
-            backdropFilter: "blur(32px) saturate(180%)",
-            WebkitBackdropFilter: "blur(32px) saturate(180%)",
+            backdropFilter: "blur(36px) saturate(180%)",
             border: "1px solid rgba(255,255,255,0.35)",
             boxShadow: "0 10px 35px rgba(0,0,0,0.08)",
+            borderRadius: "24px",
           }}
         >
           <Logo />
