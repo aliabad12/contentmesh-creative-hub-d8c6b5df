@@ -231,6 +231,16 @@
   .orb-a, .orb-b, .orb-c { animation: none; }
 }
 
+.hero-spline,
+.hero-spline spline-viewer,
+spline-viewer {
+  pointer-events: none !important;
+  user-select: none;
+  border: none;
+  box-shadow: none;
+  background: transparent;
+}
+
 @layer base {
   * { border-color: var(--color-border); }
   html { scroll-behavior: smooth; }
