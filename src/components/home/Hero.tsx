@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { ArrowRight, Play } from "lucide-react";
 
-declare global {
+declare module "react" {
   namespace JSX {
     interface IntrinsicElements {
       "spline-viewer": React.DetailedHTMLProps<
