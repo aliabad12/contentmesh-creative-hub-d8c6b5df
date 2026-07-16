@@ -30,7 +30,7 @@ export function Navbar() {
       initial={{ y: -80, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
       transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
-      className={`fixed inset-x-0 top-0 z-50 transition-all duration-500 ${scrolled ? "py-2" : "py-5"}`}
+      className={`fixed inset-x-0 top-0 z-[100] transition-all duration-500 ${scrolled ? "py-2" : "py-5"}`}
     >
       <div className={`mx-auto px-4 transition-all duration-500 sm:px-6 ${scrolled ? "max-w-5xl" : "max-w-6xl"}`}>
         <div
