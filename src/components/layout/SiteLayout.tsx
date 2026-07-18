@@ -4,6 +4,7 @@ import { ArrowUp } from "lucide-react";
 import { Navbar } from "./Navbar";
 import { Footer } from "./Footer";
 import { AmbientBackground } from "./AmbientBackground";
+import { FloatingChatbot } from "@/components/chat/FloatingChatbot";
 
 export function SiteLayout({ children }: { children: ReactNode }) {
   const [showTop, setShowTop] = useState(false);
@@ -19,13 +20,14 @@ export function SiteLayout({ children }: { children: ReactNode }) {
       <Navbar />
       <main className="pt-28">{children}</main>
       <Footer />
+      <FloatingChatbot />
       <AnimatePresence>
         {showTop && (
           <motion.button
             initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 20 }}
             onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
             aria-label="Back to top"
-            className="glass-strong glass-reflect fixed bottom-6 right-6 z-40 grid h-12 w-12 place-items-center rounded-full text-foreground shadow-float transition-transform hover:scale-105"
+            className="glass-strong glass-reflect fixed bottom-28 left-6 z-40 grid h-12 w-12 place-items-center rounded-full text-foreground shadow-float transition-transform hover:scale-105"
           >
             <ArrowUp className="h-4 w-4" />
           </motion.button>
