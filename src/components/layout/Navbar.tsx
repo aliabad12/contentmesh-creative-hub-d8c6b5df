@@ -60,7 +60,7 @@ export function Navbar() {
           <div className="flex items-center gap-2">
             <Link
               to="/contact"
-              className="hidden items-center gap-1.5 rounded-full bg-[#111] px-4 py-2 text-sm font-semibold text-white shadow-[0_10px_25px_-10px_rgba(0,0,0,0.4)] transition-transform hover:-translate-y-0.5 sm:inline-flex"
+              className="hidden items-center gap-1.5 rounded-full bg-[#0E447F] px-4 py-2 text-sm font-semibold text-white shadow-[0_10px_25px_-10px_rgba(14,68,127,0.55)] transition-all hover:-translate-y-0.5 hover:bg-[#0A3663] sm:inline-flex"
             >
               Book a Call <ArrowRight className="h-3.5 w-3.5" />
             </Link>
@@ -101,7 +101,7 @@ export function Navbar() {
               <Link
                 to="/contact"
                 onClick={() => setOpen(false)}
-                className="mt-1 rounded-2xl bg-[#111] px-4 py-3 text-center text-sm font-semibold text-white"
+                className="mt-1 rounded-2xl bg-[#0E447F] px-4 py-3 text-center text-sm font-semibold text-white"
               >
                 Book a Discovery Call
               </Link>
