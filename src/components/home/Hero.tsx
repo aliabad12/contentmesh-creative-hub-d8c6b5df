@@ -84,7 +84,7 @@ export function Hero() {
             <span style={{ color: "#FF7A00" }}>MESH</span>
           </motion.h2>
 
-          {/* Spline blob — z:2 — overlaps only the upper half of the text */}
+          {/* Spline blob — z:2 — sized to overlap only the middle letters "ENT" of CONTENT */}
           <motion.div
             initial={{ opacity: 0, scale: 0.92 }}
             animate={{ opacity: splineLoaded ? 1 : 0, scale: splineLoaded ? 1 : 0.92 }}
@@ -92,10 +92,11 @@ export function Hero() {
             className="hero-spline pointer-events-none absolute left-1/2 top-1/2 flex -translate-x-1/2 items-center justify-center"
             style={{
               zIndex: 2,
-              width: "min(700px, 92vw)",
-              height: "clamp(340px, 48vw, 560px)",
-              transform: "translate(-50%, calc(-50% - 130px))",
+              width: "clamp(200px, 32vw, 420px)",
+              height: "clamp(200px, 32vw, 420px)",
+              transform: "translate(-50%, calc(-50% - 110px))",
               userSelect: "none",
+              overflow: "visible",
             }}
           >
             {splineLoaded ? (
@@ -108,6 +109,7 @@ export function Hero() {
                   border: "none",
                   boxShadow: "none",
                   pointerEvents: "none",
+                  overflow: "visible",
                 }}
               />
             ) : null}
