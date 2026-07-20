@@ -243,8 +243,9 @@ spline-viewer {
 }
 
 .hero-title {
-  transform: translateY(-90px);
+  transform: translateY(-70px);
 }
+.hero-spline, .hero-spline * { overflow: visible !important; }
 
 @layer base {
   * { border-color: var(--color-border); }
