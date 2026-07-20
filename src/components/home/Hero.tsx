@@ -47,82 +47,79 @@ export function Hero() {
   const splineLoaded = useSplineLoaded();
 
   return (
-    <section className="relative overflow-hidden" style={{ minHeight: "100vh" }}>
-      {/* Background glow — z:0 */}
+    <section
+      className="relative flex w-full flex-col items-center justify-center"
+      style={{ minHeight: "calc(100vh - 7rem)", zIndex: 1 }}
+    >
+      {/* Background glow */}
       <div
         aria-hidden
         className="pointer-events-none absolute inset-0"
         style={{
           zIndex: 0,
           background:
-            "radial-gradient(50% 45% at 50% 50%, rgba(255,170,120,0.28) 0%, rgba(255,120,60,0.10) 35%, rgba(255,255,255,0) 70%)",
+            "radial-gradient(50% 45% at 50% 55%, rgba(255,170,120,0.24) 0%, rgba(255,120,60,0.08) 35%, rgba(255,255,255,0) 70%)",
         }}
       />
 
-      <div className="relative mx-auto flex min-h-screen w-full max-w-[1600px] items-center justify-center px-4 pt-16">
-        {/* Centered composition wrapper — text + blob share this center */}
-        <div className="relative flex w-full items-center justify-center">
-          {/* CONTENTMESH background wordmark — z:1 */}
-          <motion.h2
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1.1, ease }}
-            aria-hidden
-            className="hero-title pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 select-none font-display"
-            style={{
-              zIndex: 1,
-              fontSize: "clamp(5rem, 11vw, 9.5rem)",
-              fontWeight: 900,
-              lineHeight: 0.9,
-              letterSpacing: "-0.06em",
-              whiteSpace: "nowrap",
-              textTransform: "uppercase",
-              margin: 0,
-            }}
-          >
-            <span style={{ color: "#0E447F" }}>CONTENT</span>
-            <span style={{ color: "#FF7A00" }}>MESH</span>
-          </motion.h2>
+      <div className="relative z-[1] mx-auto flex w-full max-w-[1600px] flex-col items-center justify-center px-4">
+        {/* CONTENTMESH title — shifted up ~70px */}
+        <motion.h1
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 1.0, ease }}
+          className="hero-title pointer-events-none select-none text-center font-display"
+          style={{
+            fontSize: "clamp(4rem, 9vw, 9rem)",
+            fontWeight: 900,
+            lineHeight: 0.9,
+            letterSpacing: "-0.06em",
+            whiteSpace: "nowrap",
+            textTransform: "uppercase",
+            margin: 0,
+          }}
+        >
+          <span style={{ color: "#0F4C97" }}>CONTENT</span>
+          <span style={{ color: "#FF6A00" }}>MESH</span>
+        </motion.h1>
 
-          {/* Spline blob — z:2 — sized to overlap only the middle letters "ENT" of CONTENT */}
-          <motion.div
-            initial={{ opacity: 0, scale: 0.92 }}
-            animate={{ opacity: splineLoaded ? 1 : 0, scale: splineLoaded ? 1 : 0.92 }}
-            transition={{ duration: 1.2, ease, delay: 0.15 }}
-            className="hero-spline pointer-events-none absolute left-1/2 top-1/2 flex -translate-x-1/2 items-center justify-center"
-            style={{
-              zIndex: 2,
-              width: "clamp(200px, 32vw, 420px)",
-              height: "clamp(200px, 32vw, 420px)",
-              transform: "translate(-50%, calc(-50% - 110px))",
-              userSelect: "none",
-              overflow: "visible",
-            }}
-          >
-            {splineLoaded ? (
-              <spline-viewer
-                url={SPLINE_SCENE_URL}
-                style={{
-                  width: "100%",
-                  height: "100%",
-                  background: "transparent",
-                  border: "none",
-                  boxShadow: "none",
-                  pointerEvents: "none",
-                  overflow: "visible",
-                }}
-              />
-            ) : null}
-          </motion.div>
-        </div>
+        {/* Spline blob — floats BELOW the title, centered */}
+        <motion.div
+          initial={{ opacity: 0, scale: 0.94 }}
+          animate={{ opacity: splineLoaded ? 1 : 0, scale: splineLoaded ? 1 : 0.94 }}
+          transition={{ duration: 1.1, ease, delay: 0.15 }}
+          className="hero-spline pointer-events-none relative flex items-center justify-center"
+          style={{
+            width: "clamp(180px, 26vw, 340px)",
+            height: "clamp(180px, 26vw, 340px)",
+            marginTop: "clamp(20px, 3vh, 40px)",
+            userSelect: "none",
+            overflow: "visible",
+          }}
+        >
+          {splineLoaded ? (
+            <spline-viewer
+              url={SPLINE_SCENE_URL}
+              style={{
+                width: "140%",
+                height: "140%",
+                background: "transparent",
+                border: "none",
+                boxShadow: "none",
+                pointerEvents: "none",
+                overflow: "visible",
+              }}
+            />
+          ) : null}
+        </motion.div>
 
-        {/* CTAs — pinned near bottom of hero */}
+        {/* CTAs — 40px below blob */}
         <motion.div
           initial={{ opacity: 0, y: 24 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.5, ease }}
-          className="absolute inset-x-0 bottom-16 flex flex-wrap items-center justify-center gap-3"
-          style={{ zIndex: 3 }}
+          transition={{ duration: 0.8, delay: 0.45, ease }}
+          className="flex flex-wrap items-center justify-center gap-3"
+          style={{ marginTop: 40 }}
         >
           <a href="/contact" className="btn-primary-pill group">
             <span>Get Started</span>
