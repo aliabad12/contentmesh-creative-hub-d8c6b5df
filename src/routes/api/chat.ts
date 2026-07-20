@@ -13,52 +13,67 @@ ContentMesh services:
 
 Your job:
 1. Answer questions about ContentMesh services clearly and concisely.
-2. Recommend the most suitable service based on the client's goals (help them choose between AI videos, AI images, editing, animation, voiceovers, branding, etc.).
-3. Ask smart discovery questions to collect project requirements.
+2. Recommend the most suitable service based on the client's goals.
+3. Ask smart discovery questions to understand project needs.
 4. Generate creative ideas and content directions when helpful.
-5. Encourage users to book a discovery call at /contact and collect leads (name, email, company, project details) naturally in conversation.
-6. When asked for pricing, DO NOT invent numbers — direct them to the Pricing page (/pricing) or a discovery call.
-7. Never claim to transfer to a human. Instead, point them to /contact for the team.
+5. Encourage users to book a discovery call at /contact and collect leads naturally.
+6. For pricing, direct users to /pricing or a discovery call — never invent numbers.
+7. Never claim to transfer to a human — point them to /contact.
 
-Tone: warm, confident, concise. Use short paragraphs. Focus on being genuinely helpful to potential clients.`;
+Tone: warm, confident, concise. Short paragraphs. Genuinely helpful.`;
 
 async function handlePost({ request }: { request: Request }) {
   try {
-    const key = process.env.LOVABLE_API_KEY;
-    if (!key) return new Response(JSON.stringify({ error: "Missing LOVABLE_API_KEY" }), { status: 500 });
+    const key = process.env.DEEPSEEK_API_KEY;
+    if (!key) {
+      return new Response(
+        JSON.stringify({
+          error:
+            "Chatbot is not configured yet. Add your DEEPSEEK_API_KEY as a secret to enable Mesh.",
+        }),
+        { status: 503, headers: { "Content-Type": "application/json" } },
+      );
+    }
 
     const body = (await request.json()) as { messages?: ChatMessage[] };
     const messages = Array.isArray(body.messages) ? body.messages : [];
-    if (!messages.length) return new Response(JSON.stringify({ error: "No messages" }), { status: 400 });
+    if (!messages.length) {
+      return new Response(JSON.stringify({ error: "No messages" }), { status: 400 });
+    }
 
     const trimmed = messages.slice(-20).map((m) => ({
       role: m.role === "assistant" ? "assistant" : m.role === "system" ? "system" : "user",
       content: String(m.content ?? "").slice(0, 4000),
     }));
 
-    const res = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+    const res = await fetch("https://api.deepseek.com/v1/chat/completions", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "Lovable-API-Key": key,
+        Authorization: `Bearer ${key}`,
       },
       body: JSON.stringify({
-        model: "google/gemini-3-flash-preview",
+        model: "deepseek-chat",
         messages: [{ role: "system", content: SYSTEM_PROMPT }, ...trimmed],
+        temperature: 0.7,
+        max_tokens: 800,
       }),
     });
 
     if (!res.ok) {
       const text = await res.text();
-      const status = res.status === 429 ? 429 : res.status === 402 ? 402 : 500;
+      console.error("DeepSeek error", res.status, text);
+      const status = res.status === 429 ? 429 : res.status === 401 ? 401 : 500;
       const msg =
         status === 429
           ? "Rate limit reached — please try again in a moment."
-          : status === 402
-          ? "AI usage limit reached. Please add credits in your workspace."
+          : status === 401
+          ? "Invalid DeepSeek API key. Please check your DEEPSEEK_API_KEY secret."
           : "Chat is temporarily unavailable.";
-      console.error("Chat gateway error", res.status, text);
-      return new Response(JSON.stringify({ error: msg }), { status });
+      return new Response(JSON.stringify({ error: msg }), {
+        status,
+        headers: { "Content-Type": "application/json" },
+      });
     }
 
     const data = (await res.json()) as { choices?: Array<{ message?: { content?: string } }> };
@@ -66,7 +81,10 @@ async function handlePost({ request }: { request: Request }) {
     return Response.json({ reply });
   } catch (err) {
     console.error("Chat handler crash", err);
-    return new Response(JSON.stringify({ error: "Chat is temporarily unavailable." }), { status: 500 });
+    return new Response(JSON.stringify({ error: "Chat is temporarily unavailable." }), {
+      status: 500,
+      headers: { "Content-Type": "application/json" },
+    });
   }
 }
 
