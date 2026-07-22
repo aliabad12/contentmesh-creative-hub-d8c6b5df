@@ -17,7 +17,11 @@ const FROM = "ContentMesh <onboarding@resend.dev>";
 
 async function handlePost({ request }: { request: Request }) {
   try {
-    const apiKey = process.env.RESEND_API_KEY;
+    const apiKey =
+      process.env.RESEND_API_KEY ||
+      process.env.VITE_RESEND_API_KEY ||
+      (import.meta as any).env?.RESEND_API_KEY ||
+      (import.meta as any).env?.VITE_RESEND_API_KEY;
     if (!apiKey) {
       return Response.json({ error: "Email service is not configured." }, { status: 503 });
     }

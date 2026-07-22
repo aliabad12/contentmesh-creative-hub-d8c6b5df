@@ -22,6 +22,7 @@ import { Route as TermsRouteImport } from './routes/terms'
 import { Route as ApiChatRouteImport } from './routes/api/chat'
 import { Route as ApiContactRouteImport } from './routes/api/contact'
 import { Route as BlogSlugRouteImport } from './routes/blog.$slug'
+import { Route as StudioIndexRouteImport } from './routes/studio.index'
 import { Route as StudioSplatRouteImport } from './routes/studio.$'
 
 const IndexRoute = IndexRouteImport.update({
@@ -89,6 +90,11 @@ const BlogSlugRoute = BlogSlugRouteImport.update({
   path: '/$slug',
   getParentRoute: () => BlogRoute,
 } as any)
+const StudioIndexRoute = StudioIndexRouteImport.update({
+  id: '/studio/',
+  path: '/studio/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const StudioSplatRoute = StudioSplatRouteImport.update({
   id: '/studio/$',
   path: '/studio/$',
@@ -110,6 +116,7 @@ export interface FileRoutesByFullPath {
   '/api/contact': typeof ApiContactRoute
   '/blog/$slug': typeof BlogSlugRoute
   '/studio/$': typeof StudioSplatRoute
+  '/studio/': typeof StudioIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -126,6 +133,7 @@ export interface FileRoutesByTo {
   '/api/contact': typeof ApiContactRoute
   '/blog/$slug': typeof BlogSlugRoute
   '/studio/$': typeof StudioSplatRoute
+  '/studio': typeof StudioIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -143,6 +151,7 @@ export interface FileRoutesById {
   '/api/contact': typeof ApiContactRoute
   '/blog/$slug': typeof BlogSlugRoute
   '/studio/$': typeof StudioSplatRoute
+  '/studio/': typeof StudioIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -161,6 +170,7 @@ export interface FileRouteTypes {
     | '/api/contact'
     | '/blog/$slug'
     | '/studio/$'
+    | '/studio/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -174,8 +184,10 @@ export interface FileRouteTypes {
     | '/sitemap.xml'
     | '/terms'
     | '/api/chat'
+    | '/api/contact'
     | '/blog/$slug'
     | '/studio/$'
+    | '/studio'
   id:
     | '__root__'
     | '/'
@@ -192,6 +204,7 @@ export interface FileRouteTypes {
     | '/api/contact'
     | '/blog/$slug'
     | '/studio/$'
+    | '/studio/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -208,6 +221,7 @@ export interface RootRouteChildren {
   ApiChatRoute: typeof ApiChatRoute
   ApiContactRoute: typeof ApiContactRoute
   StudioSplatRoute: typeof StudioSplatRoute
+  StudioIndexRoute: typeof StudioIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -303,6 +317,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof BlogSlugRouteImport
       parentRoute: typeof BlogRoute
     }
+    '/studio/': {
+      id: '/studio/'
+      path: '/studio'
+      fullPath: '/studio/'
+      preLoaderRoute: typeof StudioIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/studio/$': {
       id: '/studio/$'
       path: '/studio/$'
@@ -337,6 +358,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiChatRoute: ApiChatRoute,
   ApiContactRoute: ApiContactRoute,
   StudioSplatRoute: StudioSplatRoute,
+  StudioIndexRoute: StudioIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

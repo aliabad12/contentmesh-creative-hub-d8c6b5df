@@ -24,7 +24,11 @@ Tone: warm, confident, concise. Short paragraphs. Genuinely helpful.`;
 
 async function handlePost({ request }: { request: Request }) {
   try {
-    const key = process.env.DEEPSEEK_API_KEY;
+    const key =
+      process.env.DEEPSEEK_API_KEY ||
+      process.env.VITE_DEEPSEEK_API_KEY ||
+      (import.meta as any).env?.DEEPSEEK_API_KEY ||
+      (import.meta as any).env?.VITE_DEEPSEEK_API_KEY;
     if (!key) {
       return new Response(
         JSON.stringify({
