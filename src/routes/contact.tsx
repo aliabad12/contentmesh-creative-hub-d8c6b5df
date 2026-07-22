@@ -64,10 +64,26 @@ function Contact() {
       return;
     }
     setStatus("sending");
-    await new Promise((r) => setTimeout(r, 900));
-    setStatus("ok");
-    (e.target as HTMLFormElement).reset();
+    try {
+      const res = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(Object.fromEntries(fd.entries())),
+      });
+      if (!res.ok) {
+        const data = (await res.json()) as { error?: string };
+        setErrors({ _form: data.error ?? "Something went wrong. Please try again." });
+        setStatus("error");
+        return;
+      }
+      setStatus("ok");
+      (e.target as HTMLFormElement).reset();
+    } catch {
+      setErrors({ _form: "Network error — please check your connection and try again." });
+      setStatus("error");
+    }
   };
+
 
   return (
     <SiteLayout>
@@ -109,6 +125,9 @@ function Contact() {
                 <span className="inline-flex items-center gap-1.5 text-sm font-medium text-accent">
                   <Check className="h-4 w-4" /> Thanks — we'll be in touch shortly.
                 </span>
+              )}
+              {status === "error" && errors._form && (
+                <span className="text-sm font-medium text-destructive">{errors._form}</span>
               )}
             </div>
           </motion.form>
