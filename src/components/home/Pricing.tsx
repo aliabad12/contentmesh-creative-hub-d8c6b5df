@@ -6,7 +6,7 @@ import { SectionHeader } from "./Services";
 const TIERS = [
   { name: "Starter", price: "$1.5k", desc: "For founders and creators shipping their first videos.",
     features: ["1 project / month", "AI video up to 60s", "1 voiceover language", "2 revision rounds", "5-day turnaround"], },
-  { name: "Professional", price: "$4.9k", desc: "For growing brands running multi-channel content.", featured: true,
+  { name: "Professional", price: "$2k", desc: "For growing brands running multi-channel content.", featured: true,
     features: ["4 projects / month", "AI video + animation", "3 voiceover languages", "Unlimited revisions*", "Dedicated PM", "48h priority queue"], },
   { name: "Enterprise", price: "Custom", desc: "For teams needing an end-to-end creative partner.",
     features: ["Unlimited projects", "In-house production crew", "10+ voiceover languages", "Custom workflows & CMS", "SLA & priority support"], },
