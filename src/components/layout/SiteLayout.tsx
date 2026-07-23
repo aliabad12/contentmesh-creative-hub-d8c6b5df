@@ -6,7 +6,13 @@ import { Footer } from "./Footer";
 import { AmbientBackground } from "./AmbientBackground";
 import { FloatingChatbot } from "@/components/chat/FloatingChatbot";
 
-export function SiteLayout({ children }: { children: ReactNode }) {
+interface SiteLayoutProps {
+  children: ReactNode;
+  /** Optional full-bleed slot rendered BEFORE the padded main (e.g. full-screen Hero). */
+  heroSlot?: ReactNode;
+}
+
+export function SiteLayout({ children, heroSlot }: SiteLayoutProps) {
   const [showTop, setShowTop] = useState(false);
   useEffect(() => {
     const on = () => setShowTop(window.scrollY > 600);
@@ -18,7 +24,9 @@ export function SiteLayout({ children }: { children: ReactNode }) {
     <div className="relative min-h-dvh">
       <AmbientBackground />
       <Navbar />
-      <main className="pt-28">{children}</main>
+      {/* Hero renders here — behind the fixed navbar, no pt-28 */}
+      {heroSlot}
+      <main className={heroSlot ? "" : "pt-28"}>{children}</main>
       <Footer />
       <FloatingChatbot />
       <AnimatePresence>
@@ -36,3 +44,4 @@ export function SiteLayout({ children }: { children: ReactNode }) {
     </div>
   );
 }
+

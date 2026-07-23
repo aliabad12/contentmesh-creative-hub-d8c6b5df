@@ -5,14 +5,56 @@ export default defineType({
   title: "Homepage",
   type: "document",
   fields: [
-    defineField({ name: "heroEyebrow", type: "string" }),
-    defineField({ name: "heroTitle", type: "string" }),
-    defineField({ name: "heroTitleAccent", type: "string", description: "The gradient-highlighted portion of the title" }),
-    defineField({ name: "heroSubtitle", type: "text", rows: 3 }),
-    defineField({ name: "heroPrimaryCtaLabel", type: "string" }),
-    defineField({ name: "heroPrimaryCtaHref", type: "string" }),
-    defineField({ name: "heroSecondaryCtaLabel", type: "string" }),
-    defineField({ name: "heroSecondaryCtaHref", type: "string" }),
+    defineField({
+      name: "heroSlides",
+      title: "Hero Slides",
+      type: "array",
+      description: "Add up to 5 slides. Each slide is a full-screen panel with a background image and optional YouTube video.",
+      of: [
+        {
+          type: "object",
+          name: "heroSlide",
+          title: "Slide",
+          fields: [
+            defineField({
+              name: "category",
+              title: "Category Label",
+              type: "string",
+              description: 'Shown top-left in orange. e.g. "GENERATIVE ART" or "AI VIDEO"',
+            }),
+            defineField({
+              name: "title",
+              title: "Heading",
+              type: "string",
+              description: "Big bold uppercase heading shown bottom-left.",
+            }),
+            defineField({
+              name: "description",
+              title: "Description",
+              type: "text",
+              rows: 3,
+              description: "Subtitle paragraph shown under the heading.",
+            }),
+            defineField({
+              name: "youtubeUrl",
+              title: "YouTube Video URL",
+              type: "url",
+              description: "Paste a YouTube link (e.g. https://youtu.be/xxxxx). Video opens in a popup when the play button is clicked. Leave blank to hide the play button.",
+            }),
+            defineField({
+              name: "backgroundImage",
+              title: "Background Image",
+              type: "image",
+              options: { hotspot: true },
+              description: "Full-screen background image for this slide. Required for the slide to display properly.",
+            }),
+          ],
+          preview: {
+            select: { title: "title", subtitle: "category", media: "backgroundImage" },
+          },
+        },
+      ],
+    }),
     defineField({
       name: "stats",
       type: "array",
@@ -43,3 +85,4 @@ export default defineType({
   ],
   preview: { prepare: () => ({ title: "Homepage" }) },
 });
+

@@ -6,9 +6,10 @@ export const siteSettingsQuery = /* groq */ `*[_type == "siteSettings"][0]{
 }`;
 
 export const homepageQuery = /* groq */ `*[_type == "homepage"][0]{
-  heroEyebrow, heroTitle, heroTitleAccent, heroSubtitle,
-  heroPrimaryCtaLabel, heroPrimaryCtaHref,
-  heroSecondaryCtaLabel, heroSecondaryCtaHref,
+  heroSlides[]{
+    category, title, description, youtubeUrl,
+    "backgroundImageUrl": backgroundImage.asset->url
+  },
   stats[]{ value, suffix, label },
   whyUs[]{ icon, title, description },
   ctaTitle, ctaTitleAccent, ctaSubtitle

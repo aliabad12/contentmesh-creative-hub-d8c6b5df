@@ -18,8 +18,7 @@ export const Route = createFileRoute("/")({
 
 function Index() {
   return (
-    <SiteLayout>
-      <Hero />
+    <SiteLayout heroSlot={<Hero />}>
       <TrustedBy />
       <Services />
       <WhyUs />
@@ -33,3 +32,4 @@ function Index() {
     </SiteLayout>
   );
 }
+
