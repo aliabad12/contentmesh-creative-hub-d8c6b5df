@@ -60,10 +60,10 @@ export function Navbar() {
         transition={{ duration: 0.75, ease: [0.16, 1, 0.3, 1] }}
         className="fixed inset-x-0 top-0 z-[100] flex justify-center px-4 py-4 sm:px-6"
       >
-        <div className="flex w-full max-w-6xl items-center justify-between gap-3">
+        <div className="flex w-full max-w-6xl items-center justify-between gap-1.5 sm:gap-2">
           {/* ── White glass pill: logo + desktop nav ── */}
           <div
-            className="flex h-[56px] items-center gap-1 rounded-[24px] px-3 py-1.5"
+            className="flex h-[56px] items-center gap-1 rounded-[24px] px-4 py-1.5"
             style={{
               background: "rgba(255,255,255,0.88)",
               backdropFilter: "blur(28px) saturate(180%)",
@@ -78,8 +78,8 @@ export function Navbar() {
             {/* Logo */}
             <Logo />
 
-            {/* Desktop links */}
-            <nav className="ml-2 hidden items-center gap-1 lg:flex" aria-label="Main navigation">
+            {/* Desktop links — increased padding/margin from logo (ml-8 lg:ml-12) */}
+            <nav className="ml-8 hidden items-center gap-1.5 lg:flex lg:ml-12" aria-label="Main navigation">
               {NAV.map((n) => {
                 const active = pathname.startsWith(n.to);
                 return (
@@ -145,8 +145,8 @@ export function Navbar() {
             </button>
           </div>
 
-          {/* ── Action Buttons Container: Place Order (Email/Form) + WhatsApp Contact (Matching 56px Height) ── */}
-          <div className="hidden items-center gap-2.5 sm:inline-flex">
+          {/* ── Action Buttons Container: Place Order (Email/Form) + WhatsApp Contact (Matching 56px Height & close to merging) ── */}
+          <div className="hidden items-center gap-1.5 sm:inline-flex">
             {/* Place Order Button */}
             <Link
               to="/contact"
