@@ -151,22 +151,22 @@ export function FloatingChatbot() {
                     style={{ maxWidth: "85%" }}
                   >
                     <div
-                      className="whitespace-pre-wrap rounded-2xl px-3.5 py-2.5 text-sm leading-relaxed"
+                      className="rounded-2xl px-4 py-3 text-sm leading-relaxed"
                       style={
                         m.role === "user"
                           ? {
-                              background: "#0E447F",
+                              background: "linear-gradient(135deg, #0E447F 0%, #0A3663 100%)",
                               color: "#fff",
                               borderBottomRightRadius: 6,
                             }
                           : {
                               background: "#F4F5F7",
-                              color: "#111",
+                              color: "#1E293B",
                               borderBottomLeftRadius: 6,
                             }
                       }
                     >
-                      {m.content}
+                      {renderFormattedContent(m.content, m.role)}
                     </div>
                   </div>
                 ))}
@@ -236,3 +236,61 @@ function Dot({ delay }: { delay: number }) {
     />
   );
 }
+
+function renderFormattedContent(text: string, role: "user" | "assistant") {
+  const paragraphs = text.split("\n\n");
+  return paragraphs.map((para, pIdx) => {
+    const lines = para.split("\n");
+    const isList = lines.length > 0 && lines.every((line) => line.trim().startsWith("- ") || line.trim().startsWith("* "));
+
+    if (isList) {
+      return (
+        <ul key={pIdx} className="my-1.5 space-y-2">
+          {lines.map((line, lIdx) => {
+            const cleanLine = line.trim().replace(/^[-*]\s+/, "");
+            return (
+              <li key={lIdx} className="flex items-start gap-2 text-xs sm:text-sm leading-relaxed">
+                <span
+                  className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full"
+                  style={{ background: role === "user" ? "#FF8C00" : "#FF5A1F" }}
+                />
+                <span className="flex-1">{parseBoldText(cleanLine, role)}</span>
+              </li>
+            );
+          })}
+        </ul>
+      );
+    }
+
+    return (
+      <p key={pIdx} className="mb-2 last:mb-0 text-xs sm:text-sm leading-relaxed">
+        {lines.map((line, lIdx) => (
+          <span key={lIdx}>
+            {lIdx > 0 && <br />}
+            {parseBoldText(line, role)}
+          </span>
+        ))}
+      </p>
+    );
+  });
+}
+
+function parseBoldText(text: string, role: "user" | "assistant") {
+  const parts = text.split(/(\*\*.*?\*\*|__.*?__)/g);
+  return parts.map((part, i) => {
+    if ((part.startsWith("**") && part.endsWith("**")) || (part.startsWith("__") && part.endsWith("__"))) {
+      const content = part.slice(2, -2);
+      return (
+        <strong
+          key={i}
+          className="font-bold"
+          style={{ color: role === "user" ? "#FFFFFF" : "#0F172A" }}
+        >
+          {content}
+        </strong>
+      );
+    }
+    return part;
+  });
+}
+
