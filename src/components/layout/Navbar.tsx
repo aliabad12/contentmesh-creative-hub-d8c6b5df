@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link, useRouter } from "@tanstack/react-router";
 import { motion, AnimatePresence } from "framer-motion";
-import { Menu, X, ArrowUpRight } from "lucide-react";
+import { Menu, X, ArrowUpRight, Mail } from "lucide-react";
 import { Logo } from "@/components/brand/Logo";
 import { useSanity } from "@/integrations/sanity/useSanity";
 import { siteSettingsQuery } from "@/integrations/sanity/queries";
@@ -24,12 +24,13 @@ const NAV = [
   { to: "/blog",       label: "Blog"       },
 ] as const;
 
-type SiteSettings = { whatsappNumber?: string };
+type SiteSettings = { whatsappNumber?: string; email?: string };
 
 export function Navbar() {
   const settings = useSanity<SiteSettings>(["sanity", "siteSettings"], siteSettingsQuery, {});
   const waNumber  = settings?.whatsappNumber ?? "923000000000";
   const waHref    = `https://wa.me/${waNumber}`;
+  const siteEmail = settings?.email || "waheed.sul00@gmail.com";
 
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen]         = useState(false);
@@ -141,23 +142,36 @@ export function Navbar() {
           </button>
         </div>
 
-        {/* ── WhatsApp "Contact Us" button ── */}
-        <motion.a
-          href={waHref}
-          target="_blank"
-          rel="noopener noreferrer"
-          aria-label="Contact us on WhatsApp"
-          whileHover={{ scale: 1.04 }}
-          whileTap={{ scale: 0.97 }}
-          className="hidden items-center gap-2.5 rounded-[16px] px-5 py-3 text-sm font-bold text-white sm:inline-flex"
-          style={{
-            background: "linear-gradient(135deg, #FF5A1F 0%, #FF7A00 100%)",
-            boxShadow: "0 4px 24px rgba(255,90,31,0.45)",
-          }}
-        >
-          <WhatsAppIcon size={19} />
-          Contact Us
-        </motion.a>
+        {/* ── Action Buttons Container: Place Order (Email/Form) + WhatsApp Contact ── */}
+        <div className="hidden items-center gap-2.5 sm:inline-flex">
+          {/* Place Order Button -> Direct to /contact form (with Resend email delivery) */}
+          <Link
+            to="/contact"
+            aria-label="Place an Order"
+            className="inline-flex items-center gap-2 rounded-[16px] border border-white/80 bg-white/90 px-4 py-3 text-sm font-bold text-gray-900 shadow-md backdrop-blur-md transition-all hover:bg-white hover:scale-[1.02] active:scale-[0.98]"
+          >
+            <Mail className="h-4 w-4 text-[#FF5A1F]" />
+            Place Order
+          </Link>
+
+          {/* WhatsApp Contact Us button */}
+          <motion.a
+            href={waHref}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Contact us on WhatsApp"
+            whileHover={{ scale: 1.04 }}
+            whileTap={{ scale: 0.97 }}
+            className="inline-flex items-center gap-2.5 rounded-[16px] px-5 py-3 text-sm font-bold text-white"
+            style={{
+              background: "linear-gradient(135deg, #FF5A1F 0%, #FF7A00 100%)",
+              boxShadow: "0 4px 24px rgba(255,90,31,0.45)",
+            }}
+          >
+            <WhatsAppIcon size={19} />
+            Contact Us
+          </motion.a>
+        </div>
       </motion.header>
 
       {/* ══════════════════════ MOBILE MENU ══════════════════════ */}
@@ -207,24 +221,37 @@ export function Navbar() {
                 );
               })}
 
-              {/* WhatsApp CTA */}
-              <motion.a
-                href={waHref}
-                target="_blank"
-                rel="noopener noreferrer"
+              {/* Place Order (Email / Order Form) CTA */}
+              <motion.div
                 initial={{ opacity: 0, y: 18 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0 }}
                 transition={{ delay: (NAV.length + 1) * 0.05 + 0.04, duration: 0.32, ease: [0.16, 1, 0.3, 1] }}
-                className="mt-4 flex w-full max-w-xs items-center justify-center gap-2.5 rounded-2xl py-4 text-base font-bold text-white"
-                style={{
-                  background: "linear-gradient(135deg, #FF5A1F 0%, #FF7A00 100%)",
-                  boxShadow: "0 0 32px rgba(255,90,31,0.35)",
-                }}
+                className="mt-4 flex w-full max-w-xs flex-col gap-2.5"
               >
-                <WhatsAppIcon size={20} />
-                Contact Us on WhatsApp
-              </motion.a>
+                <Link
+                  to="/contact"
+                  className="flex w-full items-center justify-center gap-2 rounded-2xl bg-white/90 py-3.5 text-base font-bold text-gray-900 shadow-md backdrop-blur-md"
+                >
+                  <Mail className="h-5 w-5 text-[#FF5A1F]" />
+                  Place Order (Email)
+                </Link>
+
+                {/* WhatsApp CTA */}
+                <a
+                  href={waHref}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex w-full items-center justify-center gap-2.5 rounded-2xl py-3.5 text-base font-bold text-white"
+                  style={{
+                    background: "linear-gradient(135deg, #FF5A1F 0%, #FF7A00 100%)",
+                    boxShadow: "0 0 32px rgba(255,90,31,0.35)",
+                  }}
+                >
+                  <WhatsAppIcon size={20} />
+                  Contact Us on WhatsApp
+                </a>
+              </motion.div>
             </nav>
 
             <motion.p
@@ -241,3 +268,4 @@ export function Navbar() {
     </>
   );
 }
+
