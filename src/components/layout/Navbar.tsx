@@ -58,9 +58,9 @@ export function Navbar() {
         initial={{ y: -80, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.75, ease: [0.16, 1, 0.3, 1] }}
-        className="fixed inset-x-0 top-0 z-[100] flex justify-center px-4 py-4 sm:px-6"
+        className="fixed inset-x-0 top-0 z-[100] flex justify-center px-6 py-5 sm:px-10 lg:px-12"
       >
-        <div className="flex w-full max-w-6xl items-center justify-between gap-1.5 sm:gap-2">
+        <div className="flex w-full max-w-[1720px] items-center justify-between gap-4">
           {/* ── White glass pill: logo + desktop nav ── */}
           <div
             className="flex h-[56px] items-center gap-1 rounded-[24px] px-4 py-1.5"
