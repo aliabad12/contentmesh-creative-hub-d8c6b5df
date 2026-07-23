@@ -58,119 +58,123 @@ export function Navbar() {
         initial={{ y: -80, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.75, ease: [0.16, 1, 0.3, 1] }}
-        className="fixed inset-x-0 top-0 z-[100] flex items-center justify-between px-4 py-4 sm:px-8"
+        className="fixed inset-x-0 top-0 z-[100] flex justify-center px-4 py-4 sm:px-6"
       >
-        {/* ── White glass pill: logo + desktop nav ── */}
-        <div
-          className="flex items-center gap-1 rounded-[20px] px-3 py-2"
-          style={{
-            background: "rgba(255,255,255,0.88)",
-            backdropFilter: "blur(28px) saturate(180%)",
-            WebkitBackdropFilter: "blur(28px) saturate(180%)",
-            boxShadow: scrolled
-              ? "0 8px 32px rgba(0,0,0,0.18), 0 1px 0 rgba(255,255,255,0.9) inset"
-              : "0 4px 20px rgba(0,0,0,0.12), 0 1px 0 rgba(255,255,255,0.9) inset",
-            border: "1px solid rgba(255,255,255,0.75)",
-            transition: "box-shadow 0.4s",
-          }}
-        >
-          {/* Logo */}
-          <Logo />
-
-          {/* Desktop links */}
-          <nav className="ml-2 hidden items-center gap-0.5 lg:flex" aria-label="Main navigation">
-            {NAV.map((n) => {
-              const active = pathname.startsWith(n.to);
-              return (
-                <Link
-                  key={n.to}
-                  to={n.to}
-                  className="relative px-4 py-2 text-sm font-medium transition-colors"
-                  style={{ color: active ? "#111" : "#666" }}
-                >
-                  {/* Active oval border */}
-                  {active && (
-                    <motion.span
-                      layoutId="nav-active-pill"
-                      className="absolute inset-0 rounded-[10px]"
-                      style={{
-                        border: "1.5px solid rgba(0,0,0,0.18)",
-                        background: "rgba(0,0,0,0.04)",
-                      }}
-                      transition={{ type: "spring", stiffness: 350, damping: 30 }}
-                    />
-                  )}
-                  <span className="relative">{n.label}</span>
-                </Link>
-              );
-            })}
-          </nav>
-
-          {/* Mobile hamburger (inside pill) */}
-          <button
-            onClick={() => setOpen((o) => !o)}
-            aria-label={open ? "Close menu" : "Open menu"}
-            aria-expanded={open}
-            className="ml-2 grid h-9 w-9 place-items-center rounded-xl transition-colors lg:hidden"
-            style={{ background: "rgba(0,0,0,0.06)", color: "#333" }}
-          >
-            <AnimatePresence mode="wait" initial={false}>
-              {open ? (
-                <motion.span
-                  key="x"
-                  initial={{ rotate: -90, opacity: 0 }}
-                  animate={{ rotate: 0, opacity: 1 }}
-                  exit={{ rotate: 90, opacity: 0 }}
-                  transition={{ duration: 0.16 }}
-                  className="absolute"
-                >
-                  <X className="h-4 w-4" />
-                </motion.span>
-              ) : (
-                <motion.span
-                  key="menu"
-                  initial={{ rotate: 90, opacity: 0 }}
-                  animate={{ rotate: 0, opacity: 1 }}
-                  exit={{ rotate: -90, opacity: 0 }}
-                  transition={{ duration: 0.16 }}
-                  className="absolute"
-                >
-                  <Menu className="h-4 w-4" />
-                </motion.span>
-              )}
-            </AnimatePresence>
-          </button>
-        </div>
-
-        {/* ── Action Buttons Container: Place Order (Email/Form) + WhatsApp Contact ── */}
-        <div className="hidden items-center gap-2.5 sm:inline-flex">
-          {/* Place Order Button -> Direct to /contact form (with Resend email delivery) */}
-          <Link
-            to="/contact"
-            aria-label="Place an Order"
-            className="inline-flex items-center gap-2 rounded-[16px] border border-white/80 bg-white/90 px-4 py-3 text-sm font-bold text-gray-900 shadow-md backdrop-blur-md transition-all hover:bg-white hover:scale-[1.02] active:scale-[0.98]"
-          >
-            <Mail className="h-4 w-4 text-[#FF5A1F]" />
-            Place Order
-          </Link>
-
-          {/* WhatsApp Contact Us button */}
-          <motion.a
-            href={waHref}
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label="Contact us on WhatsApp"
-            whileHover={{ scale: 1.04 }}
-            whileTap={{ scale: 0.97 }}
-            className="inline-flex items-center gap-2.5 rounded-[16px] px-5 py-3 text-sm font-bold text-white"
+        <div className="flex w-full max-w-6xl items-center justify-between gap-3">
+          {/* ── White glass pill: logo + desktop nav ── */}
+          <div
+            className="flex h-[56px] items-center gap-1 rounded-[24px] px-3 py-1.5"
             style={{
-              background: "linear-gradient(135deg, #FF5A1F 0%, #FF7A00 100%)",
-              boxShadow: "0 4px 24px rgba(255,90,31,0.45)",
+              background: "rgba(255,255,255,0.88)",
+              backdropFilter: "blur(28px) saturate(180%)",
+              WebkitBackdropFilter: "blur(28px) saturate(180%)",
+              boxShadow: scrolled
+                ? "0 8px 32px rgba(0,0,0,0.18), 0 1px 0 rgba(255,255,255,0.9) inset"
+                : "0 4px 20px rgba(0,0,0,0.12), 0 1px 0 rgba(255,255,255,0.9) inset",
+              border: "1px solid rgba(255,255,255,0.75)",
+              transition: "box-shadow 0.4s",
             }}
           >
-            <WhatsAppIcon size={19} />
-            Contact Us
-          </motion.a>
+            {/* Logo */}
+            <Logo />
+
+            {/* Desktop links */}
+            <nav className="ml-2 hidden items-center gap-1 lg:flex" aria-label="Main navigation">
+              {NAV.map((n) => {
+                const active = pathname.startsWith(n.to);
+                return (
+                  <Link
+                    key={n.to}
+                    to={n.to}
+                    className="relative px-5 py-2 text-sm font-medium transition-colors"
+                    style={{ color: active ? "#111" : "#666" }}
+                  >
+                    {/* Active pill with 36px radius, 4px left orange inner stroke & depth shadow */}
+                    {active && (
+                      <motion.span
+                        layoutId="nav-active-pill"
+                        className="absolute inset-0"
+                        style={{
+                          borderRadius: "36px",
+                          borderLeft: "4px solid #FF5A1F",
+                          background: "rgba(0,0,0,0.04)",
+                          boxShadow: "0 4px 14px rgba(0,0,0,0.08), inset 0 1px 0 rgba(255,255,255,0.6)",
+                        }}
+                        transition={{ type: "spring", stiffness: 350, damping: 30 }}
+                      />
+                    )}
+                    <span className="relative">{n.label}</span>
+                  </Link>
+                );
+              })}
+            </nav>
+
+            {/* Mobile hamburger (inside pill) */}
+            <button
+              onClick={() => setOpen((o) => !o)}
+              aria-label={open ? "Close menu" : "Open menu"}
+              aria-expanded={open}
+              className="ml-2 grid h-9 w-9 place-items-center rounded-xl transition-colors lg:hidden"
+              style={{ background: "rgba(0,0,0,0.06)", color: "#333" }}
+            >
+              <AnimatePresence mode="wait" initial={false}>
+                {open ? (
+                  <motion.span
+                    key="x"
+                    initial={{ rotate: -90, opacity: 0 }}
+                    animate={{ rotate: 0, opacity: 1 }}
+                    exit={{ rotate: 90, opacity: 0 }}
+                    transition={{ duration: 0.16 }}
+                    className="absolute"
+                  >
+                    <X className="h-4 w-4" />
+                  </motion.span>
+                ) : (
+                  <motion.span
+                    key="menu"
+                    initial={{ rotate: 90, opacity: 0 }}
+                    animate={{ rotate: 0, opacity: 1 }}
+                    exit={{ rotate: -90, opacity: 0 }}
+                    transition={{ duration: 0.16 }}
+                    className="absolute"
+                  >
+                    <Menu className="h-4 w-4" />
+                  </motion.span>
+                )}
+              </AnimatePresence>
+            </button>
+          </div>
+
+          {/* ── Action Buttons Container: Place Order (Email/Form) + WhatsApp Contact (Matching 56px Height) ── */}
+          <div className="hidden items-center gap-2.5 sm:inline-flex">
+            {/* Place Order Button */}
+            <Link
+              to="/contact"
+              aria-label="Place an Order"
+              className="inline-flex h-[56px] items-center gap-2 rounded-[20px] border border-white/80 bg-white/90 px-5 text-sm font-bold text-gray-900 shadow-md backdrop-blur-md transition-all hover:bg-white hover:scale-[1.02] active:scale-[0.98]"
+            >
+              <Mail className="h-4 w-4 text-[#FF5A1F]" />
+              Place Order
+            </Link>
+
+            {/* WhatsApp Contact Us button */}
+            <motion.a
+              href={waHref}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Contact us on WhatsApp"
+              whileHover={{ scale: 1.04 }}
+              whileTap={{ scale: 0.97 }}
+              className="inline-flex h-[56px] items-center gap-2.5 rounded-[20px] px-6 text-sm font-bold text-white"
+              style={{
+                background: "linear-gradient(135deg, #FF5A1F 0%, #FF7A00 100%)",
+                boxShadow: "0 4px 24px rgba(255,90,31,0.45)",
+              }}
+            >
+              <WhatsAppIcon size={19} />
+              Contact Us
+            </motion.a>
+          </div>
         </div>
       </motion.header>
 
