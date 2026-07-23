@@ -29,13 +29,6 @@ export default defineType({
               description: "Big bold uppercase heading shown bottom-left.",
             }),
             defineField({
-              name: "description",
-              title: "Description",
-              type: "text",
-              rows: 3,
-              description: "Subtitle paragraph shown under the heading.",
-            }),
-            defineField({
               name: "youtubeUrl",
               title: "YouTube Video URL",
               type: "url",
@@ -54,6 +47,13 @@ export default defineType({
           },
         },
       ],
+    }),
+    defineField({
+      name: "heroDescription",
+      title: "Company Description",
+      type: "text",
+      rows: 3,
+      description: "Shown under the heading on every slide. Describe your company in 1–2 sentences.",
     }),
     defineField({
       name: "stats",

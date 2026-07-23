@@ -6,8 +6,9 @@ export const siteSettingsQuery = /* groq */ `*[_type == "siteSettings"][0]{
 }`;
 
 export const homepageQuery = /* groq */ `*[_type == "homepage"][0]{
+  heroDescription,
   heroSlides[]{
-    category, title, description, youtubeUrl,
+    category, title, youtubeUrl,
     "backgroundImageUrl": backgroundImage.asset->url
   },
   stats[]{ value, suffix, label },
