@@ -9,6 +9,12 @@ export default defineType({
     defineField({ name: "tagline", type: "string" }),
     defineField({ name: "logo", type: "image", options: { hotspot: true } }),
     defineField({
+      name: "whatsappNumber",
+      title: "WhatsApp Number",
+      type: "string",
+      description: "Include country code, digits only. e.g. 923001234567 for +92 300 1234567",
+    }),
+    defineField({
       name: "socials",
       type: "object",
       fields: [
@@ -33,3 +39,4 @@ export default defineType({
   ],
   preview: { select: { title: "title" } },
 });
+

@@ -2,7 +2,7 @@
 
 export const siteSettingsQuery = /* groq */ `*[_type == "siteSettings"][0]{
   title, tagline, "logoUrl": logo.asset->url,
-  socials, email, phone, address, defaultSeo
+  whatsappNumber, socials, email, phone, address, defaultSeo
 }`;
 
 export const homepageQuery = /* groq */ `*[_type == "homepage"][0]{
