@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ExternalLink, X } from "lucide-react";
+import { Play, X } from "lucide-react";
 import { useSanity } from "@/integrations/sanity/useSanity";
 import { portfolioQuery } from "@/integrations/sanity/queries";
 import { SectionHeader } from "./Services";
@@ -36,6 +36,23 @@ const GRADIENTS = [
 ];
 const SPANS = ["sm:col-span-2 sm:row-span-2", "", "", "sm:col-span-2", "", "", "sm:col-span-2", ""];
 
+/** Extract a YouTube video ID from any YouTube URL format */
+function getYouTubeId(url: string): string | null {
+  try {
+    const u = new URL(url);
+    if (u.hostname === "youtu.be") return u.pathname.slice(1).split("?")[0];
+    const v = u.searchParams.get("v");
+    if (v) return v;
+    const em = u.pathname.match(/\/embed\/([^/?]+)/);
+    if (em) return em[1];
+    const sh = u.pathname.match(/\/shorts\/([^/?]+)/);
+    if (sh) return sh[1];
+  } catch {
+    if (/^[a-zA-Z0-9_-]{11}$/.test(url)) return url;
+  }
+  return null;
+}
+
 export function Portfolio() {
   const items = useSanity<Item[]>(["sanity", "portfolio"], portfolioQuery, FALLBACK_ITEMS);
   const cats = ["All", ...Array.from(new Set(items.map((i) => i.category).filter(Boolean) as string[]))];
@@ -46,18 +63,25 @@ export function Portfolio() {
   return (
     <section className="mx-auto max-w-7xl px-6 py-24" id="portfolio">
       <SectionHeader eyebrow="Portfolio" title="Work that moves — literally" desc="A curated snapshot of recent productions across formats and industries." />
+
+      {/* Category filter pills */}
       <div className="mt-8 flex flex-wrap justify-center gap-2">
         {cats.map((c) => (
           <button
             key={c}
             onClick={() => setCat(c)}
-            className={`rounded-full px-4 py-1.5 text-sm font-medium transition-all ${cat === c ? "bg-gradient-to-br from-[oklch(0.72_0.19_42)] to-[oklch(0.60_0.22_30)] text-white shadow-[0_10px_25px_-10px_rgba(255,90,31,0.6)] ring-1 ring-white/30" : "glass hover:bg-white/60 dark:hover:bg-white/10"}`}
+            className={`rounded-full px-4 py-1.5 text-sm font-medium transition-all ${
+              cat === c
+                ? "bg-gradient-to-br from-[oklch(0.72_0.19_42)] to-[oklch(0.60_0.22_30)] text-white shadow-[0_10px_25px_-10px_rgba(255,90,31,0.6)] ring-1 ring-white/30"
+                : "glass hover:bg-white/60 dark:hover:bg-white/10"
+            }`}
           >
             {c}
           </button>
         ))}
       </div>
 
+      {/* Portfolio grid */}
       <motion.div layout className="mt-10 grid auto-rows-[220px] grid-cols-1 gap-4 sm:grid-cols-3 lg:grid-cols-4">
         <AnimatePresence>
           {list.map((p, i) => {
@@ -81,8 +105,9 @@ export function Portfolio() {
                   <p className="text-[11px] font-semibold uppercase tracking-widest opacity-80">{p.category}</p>
                   <h3 className="mt-1 font-display text-lg font-semibold">{p.title}</h3>
                 </div>
-                <div className="absolute right-4 top-4 grid h-9 w-9 translate-y-2 place-items-center rounded-full bg-white/90 text-primary opacity-0 transition-all group-hover:translate-y-0 group-hover:opacity-100">
-                  <ExternalLink className="h-4 w-4" />
+                {/* Play icon on hover */}
+                <div className="absolute right-4 top-4 grid h-10 w-10 translate-y-2 place-items-center rounded-full bg-white/90 text-primary opacity-0 shadow-lg transition-all group-hover:translate-y-0 group-hover:opacity-100">
+                  <Play className="h-4 w-4 fill-current" />
                 </div>
               </motion.button>
             );
@@ -90,36 +115,69 @@ export function Portfolio() {
         </AnimatePresence>
       </motion.div>
 
+      {/* ── Lightbox modal ── */}
       <AnimatePresence>
         {open && (
           <motion.div
-            initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
             onClick={() => setOpen(null)}
-            className="fixed inset-0 z-[60] grid place-items-center bg-black/70 p-4 backdrop-blur"
+            className="fixed inset-0 z-[60] grid place-items-center bg-black/80 p-4 backdrop-blur-sm"
           >
             <motion.div
-              initial={{ scale: 0.95, y: 20 }} animate={{ scale: 1, y: 0 }} exit={{ scale: 0.95, y: 20 }}
+              initial={{ scale: 0.95, y: 20 }}
+              animate={{ scale: 1, y: 0 }}
+              exit={{ scale: 0.95, y: 20 }}
               onClick={(e) => e.stopPropagation()}
-              className="relative w-full max-w-3xl overflow-hidden rounded-3xl bg-card"
+              className="relative w-full max-w-3xl overflow-hidden rounded-3xl bg-card shadow-2xl"
             >
-              <button onClick={() => setOpen(null)} className="absolute right-4 top-4 z-10 grid h-9 w-9 place-items-center rounded-full bg-white/90 text-primary" aria-label="Close">
+              {/* Close */}
+              <button
+                onClick={() => setOpen(null)}
+                className="absolute right-4 top-4 z-10 grid h-9 w-9 place-items-center rounded-full bg-white/90 text-primary shadow"
+                aria-label="Close"
+              >
                 <X className="h-4 w-4" />
               </button>
-              <div className="aspect-video w-full" style={{ background: open.thumbnailUrl ? `url(${open.thumbnailUrl}) center/cover` : "linear-gradient(135deg,#0D4C92,#FF5A1F)" }}>
-                {!open.thumbnailUrl && <div className="h-full w-full mesh-bg mix-blend-overlay" />}
+
+              {/* Video / thumbnail area */}
+              <div className="aspect-video w-full bg-black">
+                {open.videoUrl && getYouTubeId(open.videoUrl) ? (
+                  <iframe
+                    src={`https://www.youtube-nocookie.com/embed/${getYouTubeId(open.videoUrl)}?autoplay=1&rel=0&modestbranding=1`}
+                    title={open.title}
+                    allow="autoplay; encrypted-media; picture-in-picture"
+                    allowFullScreen
+                    className="h-full w-full"
+                    style={{ border: "none" }}
+                  />
+                ) : open.thumbnailUrl ? (
+                  <img
+                    src={open.thumbnailUrl}
+                    alt={open.title}
+                    className="h-full w-full object-cover"
+                  />
+                ) : (
+                  <div
+                    className="h-full w-full"
+                    style={{ background: "linear-gradient(135deg,#0D4C92,#FF5A1F)" }}
+                  >
+                    <div className="h-full w-full mesh-bg mix-blend-overlay" />
+                  </div>
+                )}
               </div>
+
+              {/* Info */}
               <div className="p-6">
                 <p className="text-xs font-semibold uppercase tracking-widest text-accent">{open.category}</p>
                 <h3 className="mt-2 font-display text-2xl font-bold">{open.title}</h3>
-                {open.client && <p className="mt-1 text-sm text-muted-foreground">Client: {open.client}</p>}
+                {open.client && (
+                  <p className="mt-1 text-sm text-muted-foreground">Client: {open.client}</p>
+                )}
                 <p className="mt-3 text-sm text-muted-foreground">
                   {open.description ?? "A cinematic production blending AI generation, live-action plates and premium sound design."}
                 </p>
-                {open.videoUrl && (
-                  <a href={open.videoUrl} target="_blank" rel="noreferrer" className="mt-4 inline-flex items-center gap-1.5 text-sm font-semibold text-accent">
-                    Watch video <ExternalLink className="h-3.5 w-3.5" />
-                  </a>
-                )}
               </div>
             </motion.div>
           </motion.div>
