@@ -2,24 +2,69 @@ import { motion } from "framer-motion";
 import { Check } from "lucide-react";
 import { Link } from "@tanstack/react-router";
 import { SectionHeader } from "./Services";
+import { useSanity } from "@/integrations/sanity/useSanity";
+import { pricingQuery } from "@/integrations/sanity/queries";
 
-const TIERS = [
-  { name: "Starter", price: "$1.5k", desc: "For founders and creators shipping their first videos.",
-    features: ["1 project / month", "AI video up to 60s", "1 voiceover language", "2 revision rounds", "5-day turnaround"], },
-  { name: "Professional", price: "$2k", desc: "For growing brands running multi-channel content.", featured: true,
-    features: ["4 projects / month", "AI video + animation", "3 voiceover languages", "Unlimited revisions*", "Dedicated PM", "48h priority queue"], },
-  { name: "Enterprise", price: "Custom", desc: "For teams needing an end-to-end creative partner.",
-    features: ["Unlimited projects", "In-house production crew", "10+ voiceover languages", "Custom workflows & CMS", "SLA & priority support"], },
+// ─── Hardcoded fallback (shown while Sanity data loads or if no plans added yet) ─
+const FALLBACK_TIERS = [
+  {
+    _id: "starter",
+    name: "Starter",
+    price: "$1.5k",
+    isCustomPrice: false,
+    description: "For founders and creators shipping their first videos.",
+    featured: false,
+    features: ["1 project / month", "AI video up to 60s", "1 voiceover language", "2 revision rounds", "5-day turnaround"],
+    ctaLabel: "Get Quote",
+    ctaUrl: "/contact",
+  },
+  {
+    _id: "professional",
+    name: "Professional",
+    price: "$2k",
+    isCustomPrice: false,
+    description: "For growing brands running multi-channel content.",
+    featured: true,
+    features: ["4 projects / month", "AI video + animation", "3 voiceover languages", "Unlimited revisions*", "Dedicated PM", "48h priority queue"],
+    ctaLabel: "Get Quote",
+    ctaUrl: "/contact",
+  },
+  {
+    _id: "enterprise",
+    name: "Enterprise",
+    price: "Custom",
+    isCustomPrice: true,
+    description: "For teams needing an end-to-end creative partner.",
+    featured: false,
+    features: ["Unlimited projects", "In-house production crew", "10+ voiceover languages", "Custom workflows & CMS", "SLA & priority support"],
+    ctaLabel: "Get Quote",
+    ctaUrl: "/contact",
+  },
 ];
 
+type PricingPlan = {
+  _id: string;
+  name: string;
+  price: string;
+  isCustomPrice?: boolean;
+  description: string;
+  featured?: boolean;
+  features: string[];
+  ctaLabel?: string;
+  ctaUrl?: string;
+};
+
 export function Pricing() {
+  const plans = useSanity<PricingPlan[]>(["sanity", "pricingPlans"], pricingQuery, FALLBACK_TIERS);
+  const tiers = plans && plans.length > 0 ? plans : FALLBACK_TIERS;
+
   return (
     <section className="relative mx-auto max-w-7xl px-6 py-24 sm:py-32" id="pricing">
       <SectionHeader eyebrow="Pricing" title="Simple, scalable creative retainers" desc="Transparent monthly plans — no hidden fees, no long agency contracts." />
       <div className="mt-16 grid gap-6 lg:grid-cols-3">
-        {TIERS.map((t, i) => (
+        {tiers.map((t, i) => (
           <motion.div
-            key={t.name}
+            key={t._id}
             initial={{ opacity: 0, y: 24 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
@@ -57,31 +102,47 @@ export function Pricing() {
             )}
             <div className="relative">
               <h3 className="font-display text-xl font-semibold tracking-tight">{t.name}</h3>
-              <p className={`mt-1 text-sm ${t.featured ? "text-white/85" : "text-muted-foreground"}`}>{t.desc}</p>
+              <p className={`mt-1 text-sm ${t.featured ? "text-white/85" : "text-muted-foreground"}`}>{t.description}</p>
               <p className="mt-6 font-display text-5xl font-bold tracking-tight">
                 {t.price}
                 <span className={`ml-1 text-base font-medium ${t.featured ? "text-white/70" : "text-muted-foreground"}`}>
-                  {t.price !== "Custom" ? "/mo" : ""}
+                  {!t.isCustomPrice && t.price !== "Custom" ? "/mo" : ""}
                 </span>
               </p>
               <ul className="mt-6 space-y-3 text-sm">
-                {t.features.map((f) => (
+                {(t.features ?? []).map((f) => (
                   <li key={f} className="flex items-start gap-2">
                     <Check className={`mt-0.5 h-4 w-4 shrink-0 ${t.featured ? "text-white" : "text-accent"}`} />
                     <span>{f}</span>
                   </li>
                 ))}
               </ul>
-              <Link
-                to="/contact"
-                className={`mt-8 inline-flex w-full items-center justify-center rounded-full px-5 py-3.5 text-sm font-semibold ring-1 transition-transform hover:scale-[1.02] ${
-                  t.featured
-                    ? "bg-white text-primary ring-white/60 shadow-[0_10px_30px_-10px_rgba(255,255,255,0.6)]"
-                    : "bg-gradient-to-br from-[oklch(0.42_0.15_260)] to-[oklch(0.30_0.11_260)] text-white ring-white/20 shadow-ink"
-                }`}
-              >
-                Get Quote
-              </Link>
+              {/* CTA — internal Link or external <a> */}
+              {(t.ctaUrl ?? "/contact").startsWith("http") ? (
+                <a
+                  href={t.ctaUrl ?? "/contact"}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={`mt-8 inline-flex w-full items-center justify-center rounded-full px-5 py-3.5 text-sm font-semibold ring-1 transition-transform hover:scale-[1.02] ${
+                    t.featured
+                      ? "bg-white text-primary ring-white/60 shadow-[0_10px_30px_-10px_rgba(255,255,255,0.6)]"
+                      : "bg-gradient-to-br from-[oklch(0.42_0.15_260)] to-[oklch(0.30_0.11_260)] text-white ring-white/20 shadow-ink"
+                  }`}
+                >
+                  {t.ctaLabel ?? "Get Quote"}
+                </a>
+              ) : (
+                <Link
+                  to={(t.ctaUrl ?? "/contact") as "/contact"}
+                  className={`mt-8 inline-flex w-full items-center justify-center rounded-full px-5 py-3.5 text-sm font-semibold ring-1 transition-transform hover:scale-[1.02] ${
+                    t.featured
+                      ? "bg-white text-primary ring-white/60 shadow-[0_10px_30px_-10px_rgba(255,255,255,0.6)]"
+                      : "bg-gradient-to-br from-[oklch(0.42_0.15_260)] to-[oklch(0.30_0.11_260)] text-white ring-white/20 shadow-ink"
+                  }`}
+                >
+                  {t.ctaLabel ?? "Get Quote"}
+                </Link>
+              )}
             </div>
           </motion.div>
         ))}
