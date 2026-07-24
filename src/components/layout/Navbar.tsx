@@ -98,7 +98,7 @@ export function Navbar() {
                           borderRadius: "36px",
                           borderLeft: "4px solid #FF5A1F",
                           background: "rgba(0,0,0,0.04)",
-                          boxShadow: "0 4px 14px rgba(0,0,0,0.08), inset 0 1px 0 rgba(255,255,255,0.6)",
+                          boxShadow: "-4px 0 12px rgba(0,0,0,0.18), inset 0 1px 0 rgba(255,255,255,0.6)",
                         }}
                         transition={{ type: "spring", stiffness: 350, damping: 30 }}
                       />
