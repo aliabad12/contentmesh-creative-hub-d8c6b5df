@@ -60,37 +60,57 @@ function extractYouTubeId(url: string): string | null {
 // ─── YouTube background iframe (muted autoplay, covers full container) ────────
 
 function YouTubeBackground({ videoId, active }: { videoId: string; active: boolean }) {
-  // The iframe is scaled up so YouTube's player chrome (thin black bars) is cropped away.
-  // pointer-events: none makes the whole hero clickable for nav buttons.
   return (
-    <div className="absolute inset-0 overflow-hidden pointer-events-none" aria-hidden>
-      <iframe
-        key={videoId}
-        title="Background video"
-        src={
-          `https://www.youtube-nocookie.com/embed/${videoId}` +
-          `?autoplay=1&mute=1&loop=1&playlist=${videoId}` +
-          `&controls=0&showinfo=0&rel=0&modestbranding=1` +
-          `&iv_load_policy=3&disablekb=1&fs=0`
-        }
-        allow="autoplay; encrypted-media"
-        allowFullScreen={false}
+    <div
+      className="absolute inset-0 overflow-hidden pointer-events-none"
+      aria-hidden
+      style={{ opacity: active ? 1 : 0, transition: "opacity 1s ease" }}
+    >
+      {/*
+        Cover approach that works in all orientations:
+        - Set iframe to 100% × 100% of the container
+        - Use a wrapper that is sized to the 16:9 ratio and then scaled up
+          so it always covers the full viewport — portrait or landscape.
+      */}
+      <div
         style={{
           position: "absolute",
+          /* 16:9 box anchored to the center */
           top: "50%",
           left: "50%",
-          // Scale to cover the viewport at any aspect ratio
-          width: "max(100%, 177.78vh)",   // 16/9 × 100vh
-          height: "max(100%, 56.25vw)",   // 9/16 × 100vw
-          transform: "translate(-50%, -50%)",
-          opacity: active ? 1 : 0,
-          transition: "opacity 1s ease",
-          border: "none",
+          /* At least as wide as the viewport, and tall enough for portrait screens.
+             We take the larger of: 100vw OR (100vh × 16/9).
+             Then we add a small overshoot buffer (× 1.05) to hide the thin black
+             letterbox YouTube sometimes shows on very tall phones.            */
+          width: "max(100vw, calc(100vh * 16 / 9))",
+          height: "max(100vh, calc(100vw * 9 / 16))",
+          transform: "translate(-50%, -50%) scale(1.06)",
+          transformOrigin: "center center",
         }}
-      />
+      >
+        <iframe
+          key={videoId}
+          title="Background video"
+          src={
+            `https://www.youtube-nocookie.com/embed/${videoId}` +
+            `?autoplay=1&mute=1&loop=1&playlist=${videoId}` +
+            `&controls=0&showinfo=0&rel=0&modestbranding=1` +
+            `&iv_load_policy=3&disablekb=1&fs=0`
+          }
+          allow="autoplay; encrypted-media"
+          allowFullScreen={false}
+          style={{
+            width: "100%",
+            height: "100%",
+            border: "none",
+            display: "block",
+          }}
+        />
+      </div>
     </div>
   );
 }
+
 
 // ─── Component ────────────────────────────────────────────────────────────────
 
